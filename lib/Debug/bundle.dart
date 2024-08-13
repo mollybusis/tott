@@ -12,7 +12,7 @@ as audioPI;
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart ';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:path/path.dart' as path;
 import 'package:pointycastle/asn1.dart';
 import 'package:pointycastle/asymmetric/api.dart';
