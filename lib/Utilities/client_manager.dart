@@ -22,7 +22,7 @@ class ClientManager {
 
   Future uploadSignature(
       String firstName, String lastName, String imageData) async {
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v3/subpopulations/tott-sandbox/consents/signature";
     final url = Uri.parse(baseUrl + route);
 
@@ -57,7 +57,7 @@ class ClientManager {
 
   Future<ParticipantData?> checkExistingOnboardingInfo(
       String email, String reAuthToken) async {
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v3/users/self/data/{identifier}";
     final url = Uri.parse(baseUrl + route);
 
@@ -95,7 +95,7 @@ class ClientManager {
       await AuthUtils().missingLogin();
     }
 
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v3/users/self/data/{identifier}";
     final url = Uri.parse(baseUrl + route);
 
@@ -121,7 +121,7 @@ class ClientManager {
       await AuthUtils().missingLogin();
     }
 
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v3/users/self/data/{identifier}";
     final url = Uri.parse(baseUrl + route);
 
@@ -159,7 +159,7 @@ class ClientManager {
 
   Future deleteParticipant(String participantId) async {
     final url = Uri.parse(
-        'https://webservices.sagebridge.org/v3/participants/$participantId');
+        'https://devebtott.gse.harvard.edu/api/v3/participants/$participantId');
     String sessionToken = await SecureStorageManager().getSessionToken();
 
     try {
@@ -383,7 +383,7 @@ class ClientManager {
   // first you have to request an upload
   Future<Map<String, dynamic>?> requestUpload(
       String filename, int numBytes, String md5) async {
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v3/uploads";
     Uri url = Uri.parse(baseUrl + route);
 
@@ -434,7 +434,7 @@ class ClientManager {
   // this tells bridge to decrypt, unzip, and send your data to synapse
   Future uploadComplete(String uploadId) async {
     Uri url = Uri.parse(
-        'https://webservices.sagebridge.org/v3/uploads/$uploadId/complete');
+        'https://devebtott.gse.harvard.edu/api/v3/uploads/$uploadId/complete');
     String sessionToken = await SecureStorageManager().getSessionToken();
 
     try {
@@ -459,7 +459,7 @@ class ClientManager {
     String sessionToken = await SecureStorageManager().getSessionToken();
 
     final url = Uri.parse(
-        'https://webservices.sagebridge.org/v3/uploadstatuses/$uploadId');
+        'https://devebtott.gse.harvard.edu/api/v3/uploadstatuses/$uploadId');
 
     try {
       final response = await http.post(
@@ -488,7 +488,7 @@ class ClientManager {
     }
 
     final url = Uri.parse(
-        "https://webservices.sagebridge.org/v3/users/self/data/onboarding");
+        "https://devebtott.gse.harvard.edu/api/v3/users/self/data/onboarding");
 
     print("session token is ${loginInfo!.sessionToken}");
     try {
@@ -516,7 +516,7 @@ class ClientManager {
 
   /// Retrieves the appconfig from the server, necessary to check for updates.
   Future<AppConfig?> getCurrentConfig() async {
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v1/apps/tott-sandbox/appconfig";
     final url = Uri.parse(baseUrl + route);
 
@@ -550,7 +550,7 @@ class ClientManager {
       AuthUtils().missingLogin();
     }
 
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v5/studies/{studyId}/participants/self/activityevents";
     final url = Uri.parse(baseUrl + route);
 
@@ -575,7 +575,7 @@ class ClientManager {
 
   /// Retrieves a "Study" object, primarily only used for initial setup.
   Future<Study?> getStudy(String identifier) async {
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v5/studies/{studyId}";
     final url = Uri.parse(baseUrl + route);
 
@@ -608,7 +608,7 @@ class ClientManager {
       AuthUtils().missingLogin();
     }
 
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v5/studies/{studyId}/participants/self/timeline";
     final url = Uri.parse(baseUrl + route);
 
@@ -674,7 +674,7 @@ class ClientManager {
     // TODO: this is currently failing with a 404 account not found error.  that's probably unique to me but i need to solve it
     StudyActivityEventRequest newRequest = StudyActivityEventRequest(
         eventId: newEvent.eventId, timestamp: newEvent.timestamp);
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v5/studies/{studyId}/participants/self/activityevents";
     final url = Uri.parse(baseUrl + route);
 
@@ -708,7 +708,7 @@ class ClientManager {
   Future<bool> postAdherenceRecord(AdherenceRecord record) async {
     AdherenceRecordUpdates updates = AdherenceRecordUpdates(records: [record]);
 
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v5/studies/{studyId}/participants/self/activityevents";
     final url = Uri.parse(baseUrl + route);
 
@@ -732,7 +732,7 @@ class ClientManager {
   }
 
   Future deleteUser(String userId) async {
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v3/users/{userId}";
     final url = Uri.parse(baseUrl + route);
 
