@@ -40,7 +40,7 @@ class NotificationManager {
               AndroidFlutterLocalNotificationsPlugin>();
 
       final bool? grantedNotificationPermission =
-          await androidImplementation?.requestPermission();
+          await androidImplementation?.requestNotificationsPermission();
     }
   }
 

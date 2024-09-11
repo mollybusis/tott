@@ -234,9 +234,9 @@ class _AudioRecordingTaskState extends State<AudioRecordingTask> {
       }
 
       // An extra dialog to confirm upload
-      ConnectivityResult onWifi = await Connectivity().checkConnectivity();
+      List<ConnectivityResult> onWifi = await Connectivity().checkConnectivity();
       String haveWifi = "You are NOT on wifi.";
-      if (onWifi == ConnectivityResult.wifi) {
+      if (onWifi[-1] == ConnectivityResult.wifi) {
         haveWifi = "You are connected to wifi.";
       }
 
