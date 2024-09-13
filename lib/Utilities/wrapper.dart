@@ -79,6 +79,7 @@ class _WrapperState extends State<Wrapper> {
     } else {
       // they may not have auto login, but they may have saved their credentials
       await checkSavedCredentials();
+
       setState(() => target = SignInPage(email: _email, password: _password));
     }
     setState(() => _loadingMessage = null);

@@ -224,17 +224,17 @@ class StartupManager {
     } else {
       // no existing studies, i.e. first load.
       // TODO: will be replaced by study "arms"
-      Study? theStudy = await clientManager.getStudy('tott-sandbox-study');
+      Study? theStudy = await clientManager.getStudy('NewTestStudy');
       Map<String, dynamic> clientData = theStudy!.clientData ??
           {"minAge": 36, "maxAge": 144, "status": "active"};
 
       // now get a timeline.
       Timeline? newTimeline =
-          await clientManager.getTimeline('tott-sandbox-study');
+          await clientManager.getTimeline('NewTestStudy');
       startupManager.parseTimeline(newTimeline!);
       timelineParsed = true;
       Map<String, Object> studyMap = {
-        'identifier': 'tott-sandbox-study',
+        'identifier': 'NewTestStudy',
         'minAge': clientData['minAge'],
         'maxAge': clientData['maxAge'],
         'status': clientData['status'],
