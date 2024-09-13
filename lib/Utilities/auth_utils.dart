@@ -30,7 +30,7 @@ class AuthUtils {
 
   Future<UserSessionInfo?> signIn(String email, String password) async {
     // TODO: test me!!! i am untested!
-    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api";
     const route = "/v4/auth/signIn";
     final url = Uri.parse(baseUrl + route);
 
@@ -75,7 +75,7 @@ class AuthUtils {
   }
 
   Future<UserSessionInfo?> autoSignIn() async {
-    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api";
     const route = "/v4/auth/signIn";
     final url = Uri.parse(baseUrl + route);
 
@@ -108,9 +108,10 @@ class AuthUtils {
   }
 
   Future<bool> signUp(String email, String password) async {
-    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api";
     const route = "/v3/auth/signUp";
     final url = Uri.parse(baseUrl + route);
+    print("url = ${url.toString()}");
 
     String externalId = getRandomString(8);
     final data = {
@@ -130,6 +131,9 @@ class AuthUtils {
 
       //code 201 means "Created"
       if (response.statusCode == 201) {
+        return true;
+      } else {
+        print("Response code: ${response.statusCode}");
         return true;
       }
     } catch (e) {
