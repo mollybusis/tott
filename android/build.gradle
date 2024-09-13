@@ -2,16 +2,23 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url "${project(':flutter_background_geolocation').projectDir}/libs" }
         maven {
             //required by background fetch, which is required by geolocation
             url "${project(':background_fetch').projectDir}/libs"
         }
-        maven { url "${project(':flutter_background_geolocation').projectDir}/libs" }
+        maven { url 'https://developer.huawei.com/repo/' }
+
     }
 }
 ext {
     compileSdkVersion = 34                // or higher / as desired
     targetSdkVersion = 34                // or higher / as desired
+    minSdkVersion = 21
+    appCompatVersion    = "1.4.2"           // or higher / as desired
+    playServicesLocationVersion = "21.0.1"  // or higher / as desired
+    hmsLocationVersion  = "6.12.0.300" //<-- this version invokes StrictMode crash "Explicit termination method 'end' not called" from its own okhttp requests!!
+    removeBackgroundGeolocationDebugSoundsInRelease = false
 }
 
 rootProject.buildDir = "../build"

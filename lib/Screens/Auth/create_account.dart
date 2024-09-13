@@ -190,24 +190,30 @@ class _CreateAccountState extends State<CreateAccount> {
                             setState(() => loading = true);
                             bool success = false;
                             ApiException? exception;
+                            // try {
+                            //   success = await auth.signUp(
+                            //       "mileszoltak@gmail.com", "big!Cindy2011");
+                            //   exception = null;
+                            // } catch (e) {
+                            //   if (e.runtimeType == ApiException) {
+                            //     exception = e as ApiException?;
+                            //   }
+                            // }
                             try {
-                              success = await auth.signUp(
-                                  "mileszoltak@gmail.com", "big!Cindy2011");
+                              success = await auth.signUp(email, password);
                               exception = null;
                             } catch (e) {
                               if (e.runtimeType == ApiException) {
                                 exception = e as ApiException?;
                               }
                             }
-
                             // check if there were problems logging in
-                            if (success != true) {
+                            if (exception != null) {
+                              setState(() =>
+                              error = "Error: ${exception.toString()}");
+                            } else if (success != true) {
                               setState(() => error =
-                                  "Error: Please check your connection and your credentials.");
-                            //   TODO: stop being a fuckwit vvvv
-                            } else if (exception != null) {
-                              // setState(() =>
-                              //     error = "Error: ${loginInfo["message"]}");
+                              "Error: Please check your connection and your credentials.");
                             } else if (success) {
                               //we are authenticated, update the autoLogin and "remember me" prefs
                               secureStorageManager

@@ -16,7 +16,7 @@ class AuthUtils {
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   Future reAuth() async {
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v3/auth/reauth";
     final url = Uri.parse(baseUrl + route);
 
@@ -30,7 +30,7 @@ class AuthUtils {
 
   Future<UserSessionInfo?> signIn(String email, String password) async {
     // TODO: test me!!! i am untested!
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v4/auth/signIn";
     final url = Uri.parse(baseUrl + route);
 
@@ -75,7 +75,7 @@ class AuthUtils {
   }
 
   Future<UserSessionInfo?> autoSignIn() async {
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v4/auth/signIn";
     final url = Uri.parse(baseUrl + route);
 
@@ -108,7 +108,7 @@ class AuthUtils {
   }
 
   Future<bool> signUp(String email, String password) async {
-    const baseUrl = "https://webservices.sagebridge.org/";
+    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v3/auth/signUp";
     final url = Uri.parse(baseUrl + route);
 
@@ -117,7 +117,7 @@ class AuthUtils {
       "appId": "tott-sandbox",
       "email": email,
       "password": password,
-      "studyIds": ['tott-sandbox-study'],
+      "studyIds": ['NewTestStudy'],
       "externalId": externalId
     };
 

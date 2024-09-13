@@ -9,6 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
 
 UserSessionInfo? loginInfo;
 
@@ -83,7 +84,7 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
 
 Future<void> _configureLocalTimeZone() async {
   tz.initializeTimeZones();
-  final String timeZoneName = await platform.invokeMethod('getTimeZoneName');
+  final String timeZoneName = await FlutterTimezone.getLocalTimezone();
   print("time zone name $timeZoneName");
   tz.setLocalLocation(tz.getLocation(timeZoneName));
 }
@@ -110,7 +111,7 @@ Future<void> main() async {
   }
 
   const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('app_icon');
+      AndroidInitializationSettings('@mipmap/launcher_icon');
 
   /// Note: permissions aren't requested here just to demonstrate that can be
   /// done later
