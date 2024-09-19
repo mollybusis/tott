@@ -189,7 +189,7 @@ class _SignInPageState extends State<SignInPage> {
                             ApiException? exception;
                             try {
                               loginInfo = await auth.signIn(
-                                  "mileszoltak@gmail.com", "big!Cindy2011");
+                                 email, password);
                               exception = null;
                             } catch (e) {
                               if (e.runtimeType == ApiException) {

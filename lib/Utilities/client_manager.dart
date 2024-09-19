@@ -47,7 +47,7 @@ class ClientManager {
         },
         body: json.encode(signedConsent.toJson()),
       );
-
+      // if successful returns a UserSessionInfo object with a blank session token
       print("signature response: ${jsonDecode(response.body)}");
       return true;
     } catch (e) {

@@ -89,7 +89,7 @@ class _AwaitEmailVerificationState extends State<AwaitEmailVerification> {
                               ],
                             );
                           });
-                    } else if (exception.code == 404) {
+                    } else if (exception.code != 412) {
                       // ignore: use_build_context_synchronously
                       await showDialog(
                           context: context,
@@ -114,6 +114,7 @@ class _AwaitEmailVerificationState extends State<AwaitEmailVerification> {
                       loginInfo = UserSessionInfo.fromJson(
                           json.decode(exception.message!));
                       print("tripped expected 412 exception, returning.");
+                      print(loginInfo?.sessionToken.toString() ?? "session token null");
                     }
                   } else {
                     //   i don't think this will ever actually happen
