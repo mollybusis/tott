@@ -29,8 +29,8 @@ class ClientManager {
     String sessionToken = await SecureStorageManager().getSessionToken();
 
     ConsentSignature signedConsent = ConsentSignature(
-        name: "Miles Zoltak",
-        // name: "$firstName $lastName",
+        //name: "Miles Zoltak",
+        name: "$firstName $lastName",
         imageData: imageData,
         // convert from a string representation of a list of bytes to a list of ints to be base64 encoded...
         imageMimeType: 'image/png',
@@ -57,8 +57,10 @@ class ClientManager {
 
   Future<ParticipantData?> checkExistingOnboardingInfo(
       String email, String reAuthToken) async {
+
+    const String identifier = "onboarding";
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v3/users/self/data/{identifier}";
+    const route = "/v3/users/self/data/{$identifier}";
     final url = Uri.parse(baseUrl + route);
 
     String sessionToken = await SecureStorageManager().getSessionToken();
@@ -94,9 +96,9 @@ class ClientManager {
     if (loginInfo == null) {
       await AuthUtils().missingLogin();
     }
-
+    const String identifier = "onboarding";
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v3/users/self/data/{identifier}";
+    const route = "/v3/users/self/data/{$identifier}";
     final url = Uri.parse(baseUrl + route);
 
     String sessionToken = await SecureStorageManager().getSessionToken();
@@ -120,9 +122,9 @@ class ClientManager {
     if (loginInfo == null) {
       await AuthUtils().missingLogin();
     }
-
+    const String identifier = "onboarding";
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v3/users/self/data/{identifier}";
+    const route = "/v3/users/self/data/{$identifier}";
     final url = Uri.parse(baseUrl + route);
 
     String sessionToken = await SecureStorageManager().getSessionToken();
