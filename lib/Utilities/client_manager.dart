@@ -554,7 +554,7 @@ class ClientManager {
     }
 
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v5/studies/{studyId}/participants/self/activityevents";
+    final route = "/v5/studies/{$studyId}/participants/self/activityevents";
     final url = Uri.parse(baseUrl + route);
 
     StudyActivityEventList? activityEventList;
@@ -579,7 +579,7 @@ class ClientManager {
   /// Retrieves a "Study" object, primarily only used for initial setup.
   Future<Study?> getStudy(String identifier) async {
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v5/studies/{studyId}";
+    final route = "/v5/studies/{$identifier}";
     final url = Uri.parse(baseUrl + route);
 
     try {
@@ -612,7 +612,7 @@ class ClientManager {
     }
 
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v5/studies/{studyId}/participants/self/timeline";
+    final route = "/v5/studies/{$studyIdentifier}/participants/self/timeline";
     final url = Uri.parse(baseUrl + route);
 
     try {
@@ -678,7 +678,7 @@ class ClientManager {
     StudyActivityEventRequest newRequest = StudyActivityEventRequest(
         eventId: newEvent.eventId, timestamp: newEvent.timestamp);
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v5/studies/{studyId}/participants/self/activityevents";
+    const route = "/v5/studies/tott-sandbox/participants/self/activityevents";
     final url = Uri.parse(baseUrl + route);
 
     try {
@@ -712,7 +712,7 @@ class ClientManager {
     AdherenceRecordUpdates updates = AdherenceRecordUpdates(records: [record]);
 
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v5/studies/{studyId}/participants/self/activityevents";
+    const route = "/v5/studies/tott-sandbox/participants/self/activityevents";
     final url = Uri.parse(baseUrl + route);
 
     try {
@@ -736,7 +736,7 @@ class ClientManager {
 
   Future deleteUser(String userId) async {
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v3/users/{userId}";
+    final route = "/v3/users/{$userId}";
     final url = Uri.parse(baseUrl + route);
 
     try {
