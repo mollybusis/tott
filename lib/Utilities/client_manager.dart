@@ -60,7 +60,7 @@ class ClientManager {
 
     const String identifier = "onboarding";
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v3/users/self/data/{$identifier}";
+    const route = "/v3/users/self/data/$identifier";
     final url = Uri.parse(baseUrl + route);
 
     String sessionToken = await SecureStorageManager().getSessionToken();
@@ -70,7 +70,7 @@ class ClientManager {
         url,
         headers: {
           "Content-Type": "application/json",
-          "identifier": "onboarding",
+          "identifier": identifier,
           "Bridge-Session": sessionToken
         },
       );
@@ -96,9 +96,9 @@ class ClientManager {
     if (loginInfo == null) {
       await AuthUtils().missingLogin();
     }
-    const String identifier = "onboarding";
+    const String identifier = "onboarding"; // TODO: placeholder, sort of
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v3/users/self/data/{$identifier}";
+    const route = "/v3/users/self/data/$identifier";
     final url = Uri.parse(baseUrl + route);
 
     String sessionToken = await SecureStorageManager().getSessionToken();
@@ -108,7 +108,7 @@ class ClientManager {
         url,
         headers: {
           "Content-Type": "application/json",
-          "identifier": "onboarding",
+          "identifier": identifier,
           "Bridge-Session": sessionToken
         },
       );
@@ -124,7 +124,7 @@ class ClientManager {
     }
     const String identifier = "onboarding";
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v3/users/self/data/{$identifier}";
+    const route = "/v3/users/self/data/$identifier";
     final url = Uri.parse(baseUrl + route);
 
     String sessionToken = await SecureStorageManager().getSessionToken();
@@ -141,7 +141,7 @@ class ClientManager {
 
     // now we upload the (new) onboarding data
     final data = {
-      "identifier": onboardingResults.identifier,
+      "identifier": identifier,
       "data": onboardingResults.toJson(),
     };
 
@@ -554,7 +554,7 @@ class ClientManager {
     }
 
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    final route = "/v5/studies/{$studyId}/participants/self/activityevents";
+    final route = "/v5/studies/${studyId}/participants/self/activityevents";
     final url = Uri.parse(baseUrl + route);
 
     StudyActivityEventList? activityEventList;
@@ -564,7 +564,7 @@ class ClientManager {
         url,
         headers: {
           "Content-Type": "application/json",
-          "studyId": "tott-sandbox-study",
+          "studyId": studyId,
           "Bridge-Session": loginInfo!.sessionToken!
         },
       );
@@ -579,7 +579,7 @@ class ClientManager {
   /// Retrieves a "Study" object, primarily only used for initial setup.
   Future<Study?> getStudy(String identifier) async {
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    final route = "/v5/studies/{$identifier}";
+    final route = "/v5/studies/$identifier";
     final url = Uri.parse(baseUrl + route);
 
     try {
@@ -587,7 +587,7 @@ class ClientManager {
         url,
         headers: {
           "Content-Type": "application/json",
-          "studyId": "tott-sandbox-study",
+          "studyId": identifier,
           "Bridge-Session": loginInfo!.sessionToken!
         },
       );
@@ -612,7 +612,7 @@ class ClientManager {
     }
 
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    final route = "/v5/studies/{$studyIdentifier}/participants/self/timeline";
+    final route = "/v5/studies/${studyIdentifier}/participants/self/timeline";
     final url = Uri.parse(baseUrl + route);
 
     try {
@@ -622,7 +622,7 @@ class ClientManager {
           url,
           headers: {
             "Content-Type": "application/json",
-            "studyId": "tott-sandbox-study",
+            "studyId": studyIdentifier,
             "Bridge-Session": loginInfo!.sessionToken!
           },
         );
@@ -673,12 +673,12 @@ class ClientManager {
   }
 
   /// Adds an event completion on the server.
-  Future<bool> postActivityEvent(StudyActivityEvent newEvent) async {
+  Future<bool> postActivityEvent(StudyActivityEvent newEvent, {String studyId = 'tott-sandbox-study'}) async {
     // TODO: this is currently failing with a 404 account not found error.  that's probably unique to me but i need to solve it
     StudyActivityEventRequest newRequest = StudyActivityEventRequest(
         eventId: newEvent.eventId, timestamp: newEvent.timestamp);
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v5/studies/tott-sandbox/participants/self/activityevents";
+    final route = "/v5/studies/${studyId}/participants/self/activityevents";
     final url = Uri.parse(baseUrl + route);
 
     try {
@@ -686,7 +686,7 @@ class ClientManager {
         url,
         headers: {
           "Content-Type": "application/json",
-          "studyId": "tott-sandbox-study",
+          "studyId": studyId,
           "showError": "true",
           //TODO: we may not need this after debugging, but i think it will make life much better for now
           "updateBursts": "false",
@@ -708,18 +708,18 @@ class ClientManager {
   }
 
   /// Updates adherence records
-  Future<bool> postAdherenceRecord(AdherenceRecord record) async {
+  Future<bool> postAdherenceRecord(AdherenceRecord record, {String studyId = "tott-sandbox-study"}) async {
     AdherenceRecordUpdates updates = AdherenceRecordUpdates(records: [record]);
 
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    const route = "/v5/studies/tott-sandbox/participants/self/activityevents";
+    final route = "/v5/studies/${studyId}/participants/self/activityevents";
     final url = Uri.parse(baseUrl + route);
 
     try {
       final response = await http.post(url,
           headers: {
             "Content-Type": "application/json",
-            "studyId": "tott-sandbox-study",
+            "studyId": studyId,
             "Bridge-Session": loginInfo!.sessionToken!
           },
           body: updates.toJson());
@@ -736,7 +736,7 @@ class ClientManager {
 
   Future deleteUser(String userId) async {
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    final route = "/v3/users/{$userId}";
+    final route = "/v3/users/$userId";
     final url = Uri.parse(baseUrl + route);
 
     try {
