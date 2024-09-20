@@ -57,7 +57,8 @@ class _WrapperState extends State<Wrapper> {
     // TODO: there is something gravely wrong with auto sign in
     if (autoLogin) {
       // reauth them
-      loginInfo = await AuthUtils().autoSignIn();
+      UserSessionInfo? loginInfo = await AuthUtils().autoSignIn();
+      secureStorageManager.setSessionToken(loginInfo!.sessionToken!);
       print("after login info");
       // check if they are consented, if not send them to consent
       bool consented = await checkConsented();

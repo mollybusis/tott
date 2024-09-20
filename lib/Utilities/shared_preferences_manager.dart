@@ -77,7 +77,7 @@ class SharedPreferencesManager{
   /// Check whether consent has been completed. Defaults to false
   Future<bool> getConsentCompleted() async{
     //TODO: delete me!!!!
-    return false;
+    // TODO: Seems end goal was to move this to secure storage.
     return await get(consent_completed_key, defaultValue: false);
   }
 
@@ -98,8 +98,8 @@ class SharedPreferencesManager{
   }
 
   /// Sets the most recent onboarding completion date as a string.
-  Future<void> setOnboardingCompleted(String value) async{
-    await set(onboarding_completed_key, value);
+  Future<void> setOnboardingCompleted(String timeCompleted) async{
+    await set(onboarding_completed_key, timeCompleted);
   }
 
   /// For checking whether the permissions have been dealt with yet.

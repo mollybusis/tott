@@ -67,9 +67,7 @@ class SecureStorageManager {
   }
 
   Future<bool> getOnboarded() async {
-    //TODO: delete this, it is for debugging
-    return true;
-    String? onboarded = await storage.read(key: 'onboarded');
+    String? onboarded = await storage.read(key: 'onboarded', iOptions: _getIOSOptions(), aOptions: _getAndroidOptions());
     return onboarded == "true";
   }
 

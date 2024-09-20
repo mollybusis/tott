@@ -16,6 +16,7 @@ import 'package:talk_of_the_town/Screens/request_permissions.dart';
 import 'package:talk_of_the_town/Utilities/client_manager.dart';
 import 'package:talk_of_the_town/Utilities/database_manager.dart';
 import 'package:talk_of_the_town/Utilities/secure_storage_manager.dart';
+import 'package:talk_of_the_town/Utilities/shared_preferences_manager.dart';
 import 'package:talk_of_the_town/main.dart';
 
 class ToTOnboarding extends StatefulWidget {
@@ -31,6 +32,7 @@ class ToTOnboardingState extends State<ToTOnboarding> {
   final introKey = GlobalKey<IntroductionScreenState>();
   final DatabaseManager databaseManager = DatabaseManager();
   final SecureStorageManager secureStorageManager = SecureStorageManager();
+  final SharedPreferencesManager sharedPreferencesManager = SharedPreferencesManager();
 
   EdgeInsets titlePadding = const EdgeInsets.only(top: 32);
   TextStyle titleTextStyle = const TextStyle(fontSize: 28);
@@ -1388,6 +1390,7 @@ class ToTOnboardingState extends State<ToTOnboarding> {
                             .addStudyActivityEvent(completedOnboarding);
 
                         secureStorageManager.setOnboarded(true);
+                        sharedPreferencesManager.setOnboardingCompleted(onboardingEndDate.toString());
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(

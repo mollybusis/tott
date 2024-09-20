@@ -134,9 +134,10 @@ class ClientManager {
         loginInfo!.email!, loginInfo!.reauthToken!);
 
     // delete existing onboarding data if it is not null
-    if (existingParticipant != null) {
+    // TODO: No longer necessary with Osprey
+    /*if (existingParticipant != null) {
       deleteOnboardingData();
-    }
+    }*/
 
     // now we upload the (new) onboarding data
     final data = {

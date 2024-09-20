@@ -217,7 +217,11 @@ class _SignInPageState extends State<SignInPage> {
 
                               //we may not have consented or onboarded yet: navigate appropriately
                               print("login info: $loginInfo");
-                              if (loginInfo!.consented ?? false) {
+                              bool consented = await secureStorageManager.getConsented(); // this one uses secure storage
+                              if (consented != loginInfo!.consented ?? false) {
+                                print("Local consent state does not match server consent state!");
+                              }
+                              if (consented != false) {
                               // if (false && (loginInfo!.consented ?? false)) {
                                 bool onboarded =
                                     await secureStorageManager.getOnboarded();

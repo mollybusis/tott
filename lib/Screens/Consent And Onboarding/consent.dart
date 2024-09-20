@@ -8,6 +8,7 @@ import 'package:talk_of_the_town/Screens/learn_more.dart';
 import 'package:talk_of_the_town/Screens/Consent%20And%20Onboarding/onboarding.dart';
 import 'package:talk_of_the_town/Utilities/client_manager.dart';
 import 'package:talk_of_the_town/Utilities/secure_storage_manager.dart';
+import 'package:talk_of_the_town/Utilities/shared_preferences_manager.dart';
 
 class Consent extends StatefulWidget {
   const Consent({super.key});
@@ -19,6 +20,7 @@ class Consent extends StatefulWidget {
 class _ConsentState extends State<Consent> {
   final introKey = GlobalKey<IntroductionScreenState>();
   final SecureStorageManager secureStorageManager = SecureStorageManager();
+  final SharedPreferencesManager sharedPreferencesManager = SharedPreferencesManager();
   final SignatureController _controller = SignatureController(
     penStrokeWidth: 5,
     penColor: Colors.black,
@@ -616,6 +618,8 @@ class _ConsentState extends State<Consent> {
             }
 
             secureStorageManager.setConsented(true);
+            sharedPreferencesManager.setConsentCompleted();
+
 
             // ignore: use_build_context_synchronously
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const ToTOnboarding()), (route) => false);

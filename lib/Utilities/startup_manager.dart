@@ -112,7 +112,7 @@ class StartupManager {
       }
     }
     //   if there is no onboarding data on server, we end up here but i think that doesn't matter
-    print("...got participant data");
+    print("...got participant data from server");
   }
 
   /// A function that updates the ages of all participants in the local database
@@ -173,6 +173,7 @@ class StartupManager {
     // also clientData
     // check for existing appConfigs
     List haveConfigs = await databaseManager.getAllAppConfigs();
+    print(currentConfig?.toString() ?? "App config returned null");
     if (haveConfigs.length > 0) {
       // compare modifiedon.
       Map lastConfig = haveConfigs.last;
