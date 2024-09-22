@@ -419,8 +419,9 @@ class ClientManager {
   // then you have to actually upload it
   Future uploadContent(String uploadUrl, String filename,
       List<int> contentBytes, String md5, String filePath) async {
+    const baseUrl = "https://devebtott.gse.harvard.edu/api";
     try {
-      final response = await http.put(Uri.parse(uploadUrl),
+      final response = await http.put(Uri.parse(baseUrl + uploadUrl),
           headers: <String, String>{
             'Content-Type': 'application/zip',
             'Content-Length': contentBytes.length.toString(),
@@ -473,9 +474,17 @@ class ClientManager {
         },
         body: json.encode({}),
       );
-      final jsonResponse = json.decode(response.body);
-      print("Upload validation response body: $jsonResponse");
-      return jsonResponse["status"] == "succeeded";
+      if (response.body.isNotEmpty) {
+        final jsonResponse = json.decode(response.body);
+        print("Validation response code: ${response.statusCode}");
+        print("Upload validation response body: $jsonResponse");
+        return jsonResponse["status"] == "succeeded";
+      } else {
+        print("Validation response code: ${response.statusCode}");
+        print(response.toString());
+        return false;
+      }
+
     } catch (e) {
       print("Error occurred validating upload. Details: $e");
       return false;
@@ -581,6 +590,9 @@ class ClientManager {
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
     final route = "/v5/studies/$identifier";
     final url = Uri.parse(baseUrl + route);
+    print("Attempting to retrieve study ${identifier} at url ${url}");
+    String sessionToken = await SecureStorageManager().getSessionToken();
+    print("current session token: ${sessionToken}");
 
     try {
       final response = await http.get(
@@ -588,14 +600,17 @@ class ClientManager {
         headers: {
           "Content-Type": "application/json",
           "studyId": identifier,
-          "Bridge-Session": loginInfo!.sessionToken!
+          "Bridge-Session": sessionToken
         },
       );
       if (response.statusCode == 401) {
+        print("Attempting reauthorization - 401 received");
+        print(response.body);
         await AuthUtils().reAuth();
         return await getStudy(identifier);
       }
       final jsonResponse = jsonDecode(response.body);
+      print("found study, attempting to decode");
       return Study.fromJson(jsonResponse);
     } catch (e) {
       print("Error retrieving study activity event list.  Details: $e");
@@ -694,7 +709,9 @@ class ClientManager {
         },
         body: json.encode(newRequest),
       );
-      final jsonResponse = jsonDecode(response.body);
+      if (response.body.isNotEmpty) {
+        final jsonResponse = jsonDecode(response.body);
+      }
 
       if (response.statusCode == 200) {
         return true;

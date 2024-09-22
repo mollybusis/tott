@@ -17,15 +17,17 @@ class AuthUtils {
 
   Future reAuth() async {
     const baseUrl = "https://devebtott.gse.harvard.edu/api/";
-    const route = "/v3/auth/reauth";
+    const route = "/v3/auth/signIn";
     final url = Uri.parse(baseUrl + route);
+    String? password = await SecureStorageManager().getPassword();
 
     final data = {
       "appId": "tott-sandbox",
       "email": loginInfo!.email!,
-      "reauthToken": loginInfo!.reauthToken!
+      "reauthToken": password!
     };
     //   TODO: this doesn't seem to be remotely complete...
+    return await signIn(loginInfo!.email!, password!);
   }
 
   Future<UserSessionInfo?> signIn(String email, String password) async {

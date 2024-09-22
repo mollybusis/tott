@@ -28,8 +28,8 @@ class _ViewCompletedDataState extends State<ViewCompletedData> {
   Future<bool> manageConnectivity(DateTime? timestamp) async {
     List<ConnectivityResult> connectivityResult =
         await Connectivity().checkConnectivity();
-    bool onWifi = connectivityResult[-1] == ConnectivityResult.wifi;
-    bool onMobile = connectivityResult[-1] == ConnectivityResult.mobile;
+    bool onWifi = connectivityResult[0] == ConnectivityResult.wifi;
+    bool onMobile = connectivityResult[0] == ConnectivityResult.mobile;
     bool doUpload = false;
 
     if (onWifi) {

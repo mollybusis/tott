@@ -44,13 +44,14 @@ class StartupManager {
     ParticipantData? gotData = await clientManager.getOnboardingData();
     // If no onboarding data on server, we don't need to do anything.
     if (gotData != null) {
-      print("got data: ${gotData.toString()}");
+      print("got data: ${gotData.data}");
       // the problem with gotData.data: it's missing the quotation marks around the tags.
       // and it's also a generic 'Object'. So we use jsonEncode to go from object to string
       // and decode to go back into something that's actually a functional map.
       // TODO: the above comment is from jonathan, but is this still an issue in the new version?
-      Map tempData = jsonDecode(jsonEncode(gotData.data));
-      OnboardingResponse onboarding = OnboardingResponse.fromJson(tempData);
+      Map tempData = jsonDecode(gotData.data.toString());
+      print("tempData is: ${tempData}");
+      OnboardingResponse onboarding = OnboardingResponse.fromJson(jsonDecode(tempData["data"]));
       print("onboarding from server");
       print(onboarding);
 
@@ -140,8 +141,8 @@ class StartupManager {
       // in which case we need to rebuild it from the internal database
       toBeUpdated = await databaseManager.getOnboarding();
     } else {
-      Map tempData = jsonDecode(jsonEncode(currentData.data));
-      toBeUpdated = OnboardingResponse.fromJson(tempData);
+      Map tempData = jsonDecode(currentData.data.toString());
+      toBeUpdated = OnboardingResponse.fromJson(jsonDecode(tempData["data"]));
     }
     if (toBeUpdated != null) {
       // replace existing participant data with updated data and re-upload.
@@ -190,7 +191,7 @@ class StartupManager {
       int irrel = await databaseManager.addAppConfig(currentConfig!);
       startupManager.parseConfig(currentConfig);
     }
-
+    print("Grabbed app config, checking for activity events");
     // grab all StudyActivityEvents off the server
     // this has to happen first for the timeline update.
     StudyActivityEventList? serverEvents =
@@ -201,7 +202,7 @@ class StartupManager {
       addedOrUpdated =
           await databaseManager.updateAllStudyActivityEvents(serverEvents);
     }
-
+    print("checked activity events, checking studies");
     // next, timelines!
     bool timelineParsed = false;
     List allStudies = await databaseManager.getAllStudies();
@@ -225,6 +226,7 @@ class StartupManager {
     } else {
       // no existing studies, i.e. first load.
       // TODO: will be replaced by study "arms"
+      // TODO: This fails at getting studies altogether. We need to know the name of studies in advance/
       Study? theStudy = await clientManager.getStudy('NewTestStudy');
       Map<String, dynamic> clientData = theStudy!.clientData ??
           {"minAge": 36, "maxAge": 144, "status": "active"};
