@@ -329,8 +329,10 @@ class StartupManager {
           String instanceId = scheduledAssessment.instanceGuid ?? 'missing';
 
           // pull the assessment config map.
-          assessmentConfig = await clientManager
-              .getAssessmentConfig(thisAssessment.configUrl!);
+          /*assessmentConfig = await clientManager
+              .getAssessmentConfig(thisAssessment.configUrl!);*/
+          Assessment? gotAssessment = await clientManager.getAssessment(thisAssessment.guid!);
+          assessmentConfig = gotAssessment!.AssessmentConfig!;
 
           // assessmentconfig includes age range.
           int minAge = assessmentConfig![

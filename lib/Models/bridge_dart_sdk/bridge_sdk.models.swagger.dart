@@ -2578,6 +2578,7 @@ class Assessment {
     this.modifiedOn,
     this.deleted,
     this.version,
+    this.AssessmentConfig,
     this.type,
   });
 
@@ -2624,8 +2625,11 @@ class Assessment {
   final num? version;
   @JsonKey(name: 'type', includeIfNull: false)
   final String? type;
+  @JsonKey(name: 'AssessmentConfig', includeIfNull: false)
+  final Map? AssessmentConfig; //todo: String or object or map? Ideally map I think...
   static const fromJsonFactory = _$AssessmentFromJson;
   static const toJsonFactory = _$AssessmentToJson;
+
   Map<String, dynamic> toJson() => _$AssessmentToJson(this);
 
   @override
@@ -2684,6 +2688,9 @@ class Assessment {
             (identical(other.version, version) ||
                 const DeepCollectionEquality()
                     .equals(other.version, version)) &&
+            (identical(other.AssessmentConfig, AssessmentConfig) ||
+                const DeepCollectionEquality()
+                    .equals(other.AssessmentConfig, AssessmentConfig)) &&
             (identical(other.type, type) ||
                 const DeepCollectionEquality().equals(other.type, type)));
   }
@@ -2709,6 +2716,7 @@ class Assessment {
       const DeepCollectionEquality().hash(modifiedOn) ^
       const DeepCollectionEquality().hash(deleted) ^
       const DeepCollectionEquality().hash(version) ^
+      const DeepCollectionEquality().hash(AssessmentConfig) ^
       const DeepCollectionEquality().hash(type) ^
       runtimeType.hashCode;
 }
@@ -2734,6 +2742,7 @@ extension $AssessmentExtension on Assessment {
       DateTime? modifiedOn,
       bool? deleted,
       num? version,
+      Map? AssessmentConfig,
       String? type}) {
     return Assessment(
         guid: guid ?? this.guid,
@@ -2755,11 +2764,12 @@ extension $AssessmentExtension on Assessment {
         modifiedOn: modifiedOn ?? this.modifiedOn,
         deleted: deleted ?? this.deleted,
         version: version ?? this.version,
+        AssessmentConfig: AssessmentConfig ?? this.AssessmentConfig,
         type: type ?? this.type);
   }
 }
 
-@JsonSerializable(explicitToJson: true)
+/*@JsonSerializable(explicitToJson: true)
 class AssessmentConfig {
   AssessmentConfig({
     this.config,
@@ -2830,7 +2840,7 @@ extension $AssessmentConfigExtension on AssessmentConfig {
         type: type ?? this.type);
   }
 }
-
+*/
 @JsonSerializable(explicitToJson: true)
 class AssessmentInfo {
   AssessmentInfo({

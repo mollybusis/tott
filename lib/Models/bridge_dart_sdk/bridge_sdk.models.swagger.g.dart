@@ -1034,7 +1034,7 @@ Map<String, dynamic> _$AssessmentToJson(Assessment instance) {
   return val;
 }
 
-AssessmentConfig _$AssessmentConfigFromJson(Map<String, dynamic> json) {
+/*AssessmentConfig _$AssessmentConfigFromJson(Map<String, dynamic> json) {
   return AssessmentConfig(
     config: json['config'],
     createdOn: json['createdOn'] == null
@@ -1063,7 +1063,7 @@ Map<String, dynamic> _$AssessmentConfigToJson(AssessmentConfig instance) {
   writeNotNull('version', instance.version);
   writeNotNull('type', instance.type);
   return val;
-}
+}*/
 
 AssessmentInfo _$AssessmentInfoFromJson(Map<String, dynamic> json) {
   return AssessmentInfo(

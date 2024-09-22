@@ -669,7 +669,7 @@ class ClientManager {
   ///
   /// This doesn't use the usual API b/c the "getAssessmentConfig" system reqs
   /// higher-access roles, so Bridge provides a direct link in AssessmentInfo objects
-  Future<Map?> getAssessmentConfig(String configUrl) async {
+  /*Future<Map?> getAssessmentConfig(String configUrl) async {
     final url = Uri.parse(configUrl);
 
     try {
@@ -685,6 +685,35 @@ class ClientManager {
     } catch (e) {
       print("Could not retrieve Assessment Conig.  Details: $e");
     }
+  }
+
+   */
+
+  ///Retrieves assessment from assessmentId listed in timelines.
+  ///
+  Future<Assessment?> getAssessment(String guid) async {
+    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    final route = "/v1/apps/tott-sandbox/assessments/$guid";
+    final url = Uri.parse(baseUrl + route);
+    Assessment? thisAssessment;
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "appId": "tott-sandbox",
+          "guid": guid,
+          "showError": "true",
+          "Bridge-Session": loginInfo!.sessionToken!
+        },
+      );
+      final jsonResponse = jsonDecode(response.body);
+      thisAssessment = Assessment.fromJson(jsonResponse);
+    } catch (e) {
+      print("Error retrieving assessment ${guid}: $e");
+    }
+    return thisAssessment;
   }
 
   /// Adds an event completion on the server.
