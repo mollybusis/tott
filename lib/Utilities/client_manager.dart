@@ -355,7 +355,7 @@ class ClientManager {
     List<int> contentBytes = await content.readAsBytes();
     Uint8List contentBytes2 = await content.readAsBytes();
     String base64Content = base64Encode(contentBytes2);
-
+    // TODO: Temporarily neutering encryption itself in order to test upload
     // encrypt content
     String publicPem = await rootBundle.loadString('assets/public_key.pem');
     RSAPublicKey publicKey = RSAKeyParser().parse(publicPem) as RSAPublicKey;
@@ -365,11 +365,11 @@ class ClientManager {
     print("num bytes unencrypted = ${utf8.encode(base64Content).length}");
 
     //do md5 hash of that content
-    Digest digest = md5.convert(encryptedContent);
+    //Digest digest = md5.convert(encryptedContent);
+    //print("num bytes encrypted = ${encryptedContent.length}");
+    //print("which should be the same as length of list: ${encryptedContent.toList().length}");
     // TODO: delete this and get the top stuff going so we actually encrypt
-    // Digest digest = md5.convert(contentBytes);
-    print("num bytes encrypted = ${encryptedContent.length}");
-    print("which should be the same as length of list: ${encryptedContent.toList().length}");
+    Digest digest = md5.convert(contentBytes);
 
 
     String md5Content = base64Encode(digest.bytes);
@@ -377,9 +377,10 @@ class ClientManager {
     // return {"md5Content": md5Content, "numBytes": contentBytes.length};
     return {
       "md5Content": md5Content,
-      "numBytes": encryptedContent.length,
-      // "contentBytes": contentBytes2
-      "contentBytes": encryptedContent
+      //"numBytes": encryptedContent.length,
+      "numBytes": utf8.encode(base64Content).length,
+      "contentBytes": contentBytes2
+      //"contentBytes": encryptedContent
     };
   }
 
@@ -393,8 +394,8 @@ class ClientManager {
     final data = {
       "name": filename,
       "contentLength": numBytes,
-      "contentType": "application/zip",
-      "contentMd5": md5,
+      "contentType": "multipart/form-data",
+      "contentMd5": md5
       // "encrypted": false
     };
 
@@ -421,15 +422,30 @@ class ClientManager {
       List<int> contentBytes, String md5, String filePath) async {
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
     try {
-      final response = await http.put(Uri.parse(baseUrl + uploadUrl),
+      // NEW multipart form for osprey
+      final request = http.MultipartRequest("POST", Uri.parse(baseUrl + uploadUrl));
+      final headers = {
+        'Content-Type': 'multipart/form-data',
+        //'Content-Length': contentBytes.length.toString(),
+        'Content-MD5': md5,
+        'connection': 'keep-alive'
+        };
+      request.headers.addAll(headers);
+      request.files.add(http.MultipartFile.fromBytes(
+        'files',
+        contentBytes,
+        filename: filename,
+      ));
+      final response = await request.send();
+      /*final response = await http.put(Uri.parse(baseUrl + uploadUrl),
           headers: <String, String>{
             'Content-Type': 'application/zip',
             'Content-Length': contentBytes.length.toString(),
             'Content-MD5': md5,
             'connection': 'keep-alive'
           },
-          body: contentBytes);
-      print("everything worked out.");
+          body: contentBytes);*/
+      print("everything worked out. ${response.statusCode}: ${response.stream.toString()}");
     } catch (e) {
       print("Error occurred during upload. Details: $e");
     }
@@ -437,8 +453,7 @@ class ClientManager {
 
   // this tells bridge to decrypt, unzip, and send your data to synapse
   Future uploadComplete(String uploadId) async {
-    Uri url = Uri.parse(
-        'https://devebtott.gse.harvard.edu/api/v3/uploads/$uploadId/complete');
+    Uri url = Uri.parse('https://devebtott.gse.harvard.edu/api/v3/uploads/$uploadId/complete');
     String sessionToken = await SecureStorageManager().getSessionToken();
 
     try {
@@ -579,6 +594,7 @@ class ClientManager {
       );
       final jsonResponse = jsonDecode(response.body);
       activityEventList = StudyActivityEventList.fromJson(jsonResponse);
+      print("Activity event list request returned: ${response.statusCode}: ${response.body}");
     } catch (e) {
       print("Error retrieving study activity event list.  Details: $e");
     }
@@ -657,6 +673,7 @@ class ClientManager {
         // no update since last request.
         return null;
       }
+      print("Timeline request returned: ${response.statusCode}: ${response.body}");
       final jsonResponse = json.decode(response.body);
       return Timeline.fromJson(jsonResponse);
     } catch (e) {
@@ -741,6 +758,7 @@ class ClientManager {
       if (response.body.isNotEmpty) {
         final jsonResponse = jsonDecode(response.body);
       }
+      print("Post activity event for ${studyId} returned: ${response.statusCode}: ${response.body}");
 
       if (response.statusCode == 200) {
         return true;

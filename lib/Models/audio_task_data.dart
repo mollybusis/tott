@@ -154,10 +154,10 @@ class AudioTaskData {
     print(zipTarget);
 
     // STEP 4: Get zip content
-    Map<String, dynamic> encryptionResult =
-    await clientManager.encryptZip(zipTarget!);
-    int numBytes = encryptionResult["numBytes"];
+    Map<String, dynamic> encryptionResult = await clientManager.encryptZip(zipTarget!);
+    //int numBytes = encryptionResult["numBytes"]; TODO restore for encryption
     List<int> contentBytes = encryptionResult["contentBytes"];
+    int numBytes = contentBytes.length;
     String contentMd5 = encryptionResult["md5Content"];
     print("did we get this far?");
     print(contentMd5);
@@ -166,8 +166,7 @@ class AudioTaskData {
     // STEP 5: Request upload
     String filename = path.basename(zipTarget);
 
-    Map<String, dynamic>? requestResult =
-    await clientManager.requestUpload(filename, numBytes, contentMd5);
+    Map<String, dynamic>? requestResult = await clientManager.requestUpload(filename, numBytes, contentMd5);
     String uploadId = requestResult!["uploadId"];
     String uploadUrl = requestResult!["uploadUrl"];
 
