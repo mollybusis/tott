@@ -4,6 +4,7 @@ import 'package:archive/archive.dart';
 import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart' as parser;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'dart:convert';
@@ -372,7 +373,7 @@ class ClientManager {
     Digest digest = md5.convert(contentBytes);
 
 
-    String md5Content = base64Encode(digest.bytes);
+    String md5Content = digest.toString();
 
     // return {"md5Content": md5Content, "numBytes": contentBytes.length};
     return {
@@ -394,7 +395,7 @@ class ClientManager {
     final data = {
       "name": filename,
       "contentLength": numBytes,
-      "contentType": "multipart/form-data",
+      "contentType": 'application/zip',//'multipart/form-data',
       "contentMd5": md5
       // "encrypted": false
     };
@@ -421,21 +422,27 @@ class ClientManager {
   Future uploadContent(String uploadUrl, String filename,
       List<int> contentBytes, String md5, String filePath) async {
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    String sessionToken = await SecureStorageManager().getSessionToken();
+
     try {
       // NEW multipart form for osprey
-      final request = http.MultipartRequest("POST", Uri.parse(baseUrl + uploadUrl));
-      final headers = {
-        'Content-Type': 'multipart/form-data',
-        //'Content-Length': contentBytes.length.toString(),
-        'Content-MD5': md5,
-        'connection': 'keep-alive'
-        };
-      request.headers.addAll(headers);
-      request.files.add(http.MultipartFile.fromBytes(
-        'files',
+      final request = http.MultipartRequest("PUT", Uri.parse(baseUrl + uploadUrl));
+      final fileForUpload = http.MultipartFile.fromBytes(
+        'file',
         contentBytes,
         filename: filename,
-      ));
+        contentType: parser.MediaType('application', 'zip')
+      );
+      request.files.add(fileForUpload);
+      print("Length of multipart request file is ${request.contentLength}");
+      final headers = {
+        'Content-Type': 'multipart/form-data',
+        'Content-Length': request.contentLength.toString(),
+        'Content-MD5': md5,
+        'connection': 'keep-alive',
+        'Bridge-Session': sessionToken
+      };
+      request.headers.addAll(headers);
       final response = await request.send();
       /*final response = await http.put(Uri.parse(baseUrl + uploadUrl),
           headers: <String, String>{
@@ -481,18 +488,17 @@ class ClientManager {
         'https://devebtott.gse.harvard.edu/api/v3/uploadstatuses/$uploadId');
 
     try {
-      final response = await http.post(
+      final response = await http.get(
         url,
         headers: {
           "Content-Type": "application/json",
           "Bridge-Session": sessionToken
         },
-        body: json.encode({}),
       );
       if (response.body.isNotEmpty) {
         final jsonResponse = json.decode(response.body);
         print("Validation response code: ${response.statusCode}");
-        print("Upload validation response body: $jsonResponse");
+        print("Upload validation response body: ${jsonResponse.toString()}");
         return jsonResponse["status"] == "succeeded";
       } else {
         print("Validation response code: ${response.statusCode}");
