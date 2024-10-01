@@ -142,7 +142,7 @@ class AudioTaskData {
     String tempPath = zipPrep["tempPath"];
 
     // STEP 2: add files to zip folder
-    print("theres nothing i can do, the audio path is $recordingPath");
+    print("The audio path is $recordingPath");
     String audioFilename = clientManager.addAudioToZip(toBeZipped, recordingPath);
     print("for the record audio, filename is $audioFilename");
 

@@ -31,7 +31,6 @@ class AuthUtils {
   }
 
   Future<UserSessionInfo?> signIn(String email, String password) async {
-    // TODO: test me!!! i am untested!
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
     const route = "/v4/auth/signIn";
     final url = Uri.parse(baseUrl + route);
