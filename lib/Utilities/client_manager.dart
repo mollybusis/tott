@@ -782,7 +782,7 @@ class ClientManager {
     AdherenceRecordUpdates updates = AdherenceRecordUpdates(records: [record]);
 
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    final route = "/v5/studies/${studyId}/participants/self/activityevents";
+    final route = "/v5/studies/${studyId}/participants/self/adherence";
     final url = Uri.parse(baseUrl + route);
 
     try {
@@ -793,7 +793,7 @@ class ClientManager {
             "Bridge-Session": loginInfo!.sessionToken!
           },
           body: updates.toJson());
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return true;
       } else {
         throw ApiException(response.statusCode, response.body);
