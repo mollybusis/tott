@@ -96,7 +96,7 @@ class _HomeState extends State<Home> {
                   onTap: () {
                     TaskPayload defaultTaskPayload = TaskPayload(
                         'generic',
-                        'manualtask',
+                        'manualtask_${DateTime.now().toIso8601String()}',
                         'unnamed',
                         48,
                         144,
