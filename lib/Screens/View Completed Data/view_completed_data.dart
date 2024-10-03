@@ -104,6 +104,8 @@ class _ViewCompletedDataState extends State<ViewCompletedData> {
 
       AdherenceRecord updateAdherence = AdherenceRecord(
           instanceGuid: element.sessionInstanceGuid,
+          userId: element.participantIds[0],
+          uploadIds: [uploadID],
           startedOn: element.startDate,
           finishedOn: element.endDate,
           eventTimestamp: scheduledSessionTimeStamp,

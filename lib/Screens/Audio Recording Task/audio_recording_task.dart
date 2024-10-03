@@ -553,6 +553,8 @@ class _AudioRecordingTaskState extends State<AudioRecordingTask> {
 
       AdherenceRecord updateAdherence = AdherenceRecord(
           instanceGuid: element.sessionInstanceGuid,
+          userId: element.participantIds[0],
+          uploadIds: [uploadID],
           startedOn: element.startDate,
           finishedOn: element.endDate,
           eventTimestamp: scheduledSessionTimeStamp,

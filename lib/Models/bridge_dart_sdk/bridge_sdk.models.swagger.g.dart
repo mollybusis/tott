@@ -472,6 +472,8 @@ Map<String, dynamic> _$AddressToJson(Address instance) {
 AdherenceRecord _$AdherenceRecordFromJson(Map<String, dynamic> json) {
   return AdherenceRecord(
     instanceGuid: json['instanceGuid'] as String?,
+    userId: json['userId'] as String?,
+    uploadIds: json['uploadIds'],
     startedOn: json['startedOn'] == null
         ? null
         : DateTime.parse(json['startedOn'] as String),
@@ -501,6 +503,8 @@ Map<String, dynamic> _$AdherenceRecordToJson(AdherenceRecord instance) {
   }
 
   writeNotNull('instanceGuid', instance.instanceGuid);
+  writeNotNull('userId', instance.userId);
+  writeNotNull('uploadIds', instance.uploadIds);
   writeNotNull('startedOn', instance.startedOn?.toIso8601String());
   writeNotNull('finishedOn', instance.finishedOn?.toIso8601String());
   writeNotNull('eventTimestamp', instance.eventTimestamp?.toIso8601String());

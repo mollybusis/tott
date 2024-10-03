@@ -1327,6 +1327,8 @@ extension $AddressExtension on Address {
 class AdherenceRecord {
   AdherenceRecord({
     this.instanceGuid,
+    this.userId,
+    this.uploadIds,
     this.startedOn,
     this.finishedOn,
     this.eventTimestamp,
@@ -1342,6 +1344,10 @@ class AdherenceRecord {
 
   @JsonKey(name: 'instanceGuid', includeIfNull: false)
   final String? instanceGuid;
+  @JsonKey(name: 'userId', includeIfNull: false)
+  final String? userId;
+  @JsonKey(name: 'uploadIds', includeIfNull: false)
+  final List<String>? uploadIds;
   @JsonKey(name: 'startedOn', includeIfNull: false)
   final DateTime? startedOn;
   @JsonKey(name: 'finishedOn', includeIfNull: false)
@@ -1369,6 +1375,12 @@ class AdherenceRecord {
             (identical(other.instanceGuid, instanceGuid) ||
                 const DeepCollectionEquality()
                     .equals(other.instanceGuid, instanceGuid)) &&
+            (identical(other.userId, userId) ||
+                const DeepCollectionEquality()
+                    .equals(other.userId, userId)) &&
+            (identical(other.uploadIds, uploadIds) ||
+                const DeepCollectionEquality()
+                    .equals(other.uploadIds, uploadIds)) &&
             (identical(other.startedOn, startedOn) ||
                 const DeepCollectionEquality()
                     .equals(other.startedOn, startedOn)) &&
@@ -1397,6 +1409,8 @@ class AdherenceRecord {
   @override
   int get hashCode =>
       const DeepCollectionEquality().hash(instanceGuid) ^
+      const DeepCollectionEquality().hash(userId) ^
+      const DeepCollectionEquality().hash(uploadIds) ^
       const DeepCollectionEquality().hash(startedOn) ^
       const DeepCollectionEquality().hash(finishedOn) ^
       const DeepCollectionEquality().hash(eventTimestamp) ^
@@ -1411,6 +1425,8 @@ class AdherenceRecord {
 extension $AdherenceRecordExtension on AdherenceRecord {
   AdherenceRecord copyWith(
       {String? instanceGuid,
+      String? userId,
+      List<String>? uploadIds,
       DateTime? startedOn,
       DateTime? finishedOn,
       DateTime? eventTimestamp,
@@ -1421,6 +1437,8 @@ extension $AdherenceRecordExtension on AdherenceRecord {
       String? type}) {
     return AdherenceRecord(
         instanceGuid: instanceGuid ?? this.instanceGuid,
+        userId: userId ?? this.userId,
+        uploadIds: uploadIds ?? this.uploadIds,
         startedOn: startedOn ?? this.startedOn,
         finishedOn: finishedOn ?? this.finishedOn,
         eventTimestamp: eventTimestamp ?? this.eventTimestamp,
