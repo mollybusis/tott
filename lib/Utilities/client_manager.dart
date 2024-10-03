@@ -473,7 +473,7 @@ class ClientManager {
         body: json.encode({}),
       );
       final jsonResponse = json.decode(response.body);
-      print("Upload complete response body: $jsonResponse");
+      print("Upload complete response code: ${response.statusCode}, response body: $jsonResponse");
       print("upload id: $uploadId");
     } catch (e) {
       print("Error occurred calling upload complete. Details: $e");
@@ -745,7 +745,7 @@ class ClientManager {
     StudyActivityEventRequest newRequest = StudyActivityEventRequest(
         eventId: newEvent.eventId, timestamp: newEvent.timestamp);
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    final route = "/v5/studies/${studyId}/participants/self/activityevents";
+    final route = "/v5/studies/$studyId/participants/self/activityevents?showError=true&updateBursts=false";
     final url = Uri.parse(baseUrl + route);
 
     try {
@@ -753,10 +753,6 @@ class ClientManager {
         url,
         headers: {
           "Content-Type": "application/json",
-          "studyId": studyId,
-          "showError": "true",
-          //TODO: we may not need this after debugging, but i think it will make life much better for now
-          "updateBursts": "false",
           "Bridge-Session": loginInfo!.sessionToken!
         },
         body: json.encode(newRequest),
@@ -766,7 +762,7 @@ class ClientManager {
       }
       print("Post activity event for ${studyId} returned: ${response.statusCode}: ${response.body}");
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return true;
       } else {
         throw ApiException(response.statusCode, response.body);
@@ -782,18 +778,18 @@ class ClientManager {
     AdherenceRecordUpdates updates = AdherenceRecordUpdates(records: [record]);
 
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    final route = "/v5/studies/${studyId}/participants/self/adherence";
+    final route = "/v5/studies/$studyId/participants/self/adherence";
     final url = Uri.parse(baseUrl + route);
+    String sessionToken = await SecureStorageManager().getSessionToken();
 
     try {
       final response = await http.post(url,
           headers: {
             "Content-Type": "application/json",
-            "studyId": studyId,
-            "Bridge-Session": loginInfo!.sessionToken!
+            "Bridge-Session": sessionToken
           },
-          body: updates.toJson());
-      if (response.statusCode == 201) {
+          body: json.encode(updates.toJson()));
+      if (response.statusCode == 200) {
         return true;
       } else {
         throw ApiException(response.statusCode, response.body);
