@@ -95,7 +95,7 @@ class _HomeState extends State<Home> {
                 GestureDetector(
                   onTap: () {
                     TaskPayload defaultTaskPayload = TaskPayload(
-                        'generic',
+                        'generic', // TODO: Generate unique guid
                         'manualtask_${DateTime.now().toIso8601String()}',
                         'unnamed',
                         48,

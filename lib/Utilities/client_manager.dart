@@ -586,7 +586,7 @@ class ClientManager {
         url,
         headers: {
           "Content-Type": "application/json",
-          "studyId": studyId,
+          //"studyId": studyId,
           "Bridge-Session": loginInfo!.sessionToken!
         },
       );
@@ -781,6 +781,7 @@ class ClientManager {
             "Bridge-Session": sessionToken
           },
           body: json.encode(updates.toJson()));
+      print("adherence record post returned status ${response.statusCode} with message: ${response.body}");
       if (response.statusCode == 200) {
         return true;
       } else {
