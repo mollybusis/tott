@@ -369,7 +369,6 @@ class ClientManager {
     //Digest digest = md5.convert(encryptedContent);
     //print("num bytes encrypted = ${encryptedContent.length}");
     //print("which should be the same as length of list: ${encryptedContent.toList().length}");
-    // TODO: delete this and get the top stuff going so we actually encrypt
     Digest digest = md5.convert(contentBytes);
 
 
@@ -444,15 +443,8 @@ class ClientManager {
       };
       request.headers.addAll(headers);
       final response = await request.send();
-      /*final response = await http.put(Uri.parse(baseUrl + uploadUrl),
-          headers: <String, String>{
-            'Content-Type': 'application/zip',
-            'Content-Length': contentBytes.length.toString(),
-            'Content-MD5': md5,
-            'connection': 'keep-alive'
-          },
-          body: contentBytes);*/
-      print("everything worked out. ${response.statusCode}: ${response.stream.toString()}");
+
+      print("No major errors. Upload returns: ${response.statusCode}: ${response.stream.toString()}");
     } catch (e) {
       print("Error occurred during upload. Details: $e");
     }
@@ -534,7 +526,7 @@ class ClientManager {
         },
       );
       final jsonResponse = json.decode(response.body);
-      print("hahahhahaah: ${jsonResponse.toString()}");
+      print("Here's what came back from onboarding data: ${jsonResponse.toString()}");
       if (response.statusCode != 200) return null;
       // TODO: does this actually render the participantdata object we want?
       ParticipantData unparsed = ParticipantData(
@@ -576,15 +568,15 @@ class ClientManager {
     return appConfig;
   }
 
-  /// Retrieves *all* ActivityEvents for a participant (if there are any).
+  /// Retrieves ActivityEvents for a participant (if there are any).
   Future<StudyActivityEventList?> getActivityEvents(
-      {String studyId = 'tott-sandbox-study'}) async {
+      {String studyId = 'NewTestStudy'}) async {
     if (loginInfo == null) {
       AuthUtils().missingLogin();
     }
 
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    final route = "/v5/studies/${studyId}/participants/self/activityevents";
+    final route = "/v5/studies/$studyId/participants/self/activityevents";
     final url = Uri.parse(baseUrl + route);
 
     StudyActivityEventList? activityEventList;
@@ -649,7 +641,7 @@ class ClientManager {
     }
 
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
-    final route = "/v5/studies/${studyIdentifier}/participants/self/timeline";
+    final route = "/v5/studies/$studyIdentifier/participants/self/timeline";
     final url = Uri.parse(baseUrl + route);
 
     try {
@@ -692,6 +684,7 @@ class ClientManager {
   ///
   /// This doesn't use the usual API b/c the "getAssessmentConfig" system reqs
   /// higher-access roles, so Bridge provides a direct link in AssessmentInfo objects
+  /// No longer needed as of switch to Osprey
   /*Future<Map?> getAssessmentConfig(String configUrl) async {
     final url = Uri.parse(configUrl);
 
@@ -740,8 +733,7 @@ class ClientManager {
   }
 
   /// Adds an event completion on the server.
-  Future<bool> postActivityEvent(StudyActivityEvent newEvent, {String studyId = 'tott-sandbox-study'}) async {
-    // TODO: this is currently failing with a 404 account not found error.  that's probably unique to me but i need to solve it
+  Future<bool> postActivityEvent(StudyActivityEvent newEvent, {String studyId = 'NewTestStudy'}) async {
     StudyActivityEventRequest newRequest = StudyActivityEventRequest(
         eventId: newEvent.eventId, timestamp: newEvent.timestamp);
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
@@ -774,7 +766,7 @@ class ClientManager {
   }
 
   /// Updates adherence records
-  Future<bool> postAdherenceRecord(AdherenceRecord record, {String studyId = "tott-sandbox-study"}) async {
+  Future<bool> postAdherenceRecord(AdherenceRecord record, {String studyId = "NewTestStudy"}) async {
     AdherenceRecordUpdates updates = AdherenceRecordUpdates(records: [record]);
 
     const baseUrl = "https://devebtott.gse.harvard.edu/api";
