@@ -174,6 +174,7 @@ class StartupManager {
     // also clientData
     // check for existing appConfigs
     List haveConfigs = await databaseManager.getAllAppConfigs();
+    List<String> studyIdList = [];
     print(currentConfig?.toString() ?? "App config returned null");
     if (haveConfigs.length > 0) {
       // compare modifiedon.
@@ -184,12 +185,14 @@ class StartupManager {
         // now we need to do all the parsing of new activities and stuff.
         int irrel = await databaseManager.addAppConfig(currentConfig);
         // The parsing system
-        startupManager.parseConfig(currentConfig);
+        studyIdList = await startupManager.parseConfig(currentConfig) ?? [];
+      } else {
+        studyIdList = await databaseManager.getAllStudyIdentifiers();
       }
     } else {
       // The same parsing system. For the first launch, no need to check.
       int irrel = await databaseManager.addAppConfig(currentConfig!);
-      startupManager.parseConfig(currentConfig);
+      studyIdList = await startupManager.parseConfig(currentConfig) ?? [];
     }
     print("Grabbed app config, checking for activity events");
     // grab all StudyActivityEvents off the server
@@ -206,7 +209,7 @@ class StartupManager {
     // next, timelines!
     bool timelineParsed = false;
     List allStudies = await databaseManager.getAllStudies();
-    if (allStudies.length > 0) {
+    if (allStudies.length == studyIdList.length) {
       allStudies.forEach((element) async {
         DateTime lastTimelineCheck = DateTime.parse(element['timelineUpdated']);
         print("Timeline last updated: " + element['timelineUpdated']);
@@ -224,27 +227,47 @@ class StartupManager {
         }
       });
     } else {
-      // no existing studies, i.e. first load.
-      // TODO: will be replaced by study "arms"
-      // TODO: This fails at getting studies altogether. We need to know the name of studies in advance/
-      Study? theStudy = await clientManager.getStudy('NewTestStudy');
-      Map<String, dynamic> clientData = theStudy!.clientData ??
-          {"minAge": 36, "maxAge": 144, "status": "active"};
+      // no existing studies or new studies added, i.e. first load.
+      // This pulls from the list of study IDs.
+      List<String> existingStudyIds = await databaseManager.getAllStudyIdentifiers();
+      studyIdList.forEach((element) async {
+        if (existingStudyIds.contains(element)){
+          Map thisStudy = allStudies[allStudies.indexOf(element)];
+          DateTime lastTimelineCheck = DateTime.parse(thisStudy['timelineUpdated']);
+          print("Timeline last updated: " + thisStudy['timelineUpdated']);
+          Timeline? latestTimeline = await clientManager
+              .getTimeline(thisStudy['identifier'], lastChecked: lastTimelineCheck);
+          //Timeline? latestTimeline = await client.getTimeline(element['identifier']); // debug, in case it screws up
+          if (latestTimeline != null) {
+            // if it's null, it hasn't changed.
+            int updating = await databaseManager.updateTimelineDatestamp(
+                thisStudy['identifier'], DateTime.now());
+            // Parse timeline into ScheduledSessions, AudioTaskPayloads, and notifications
+            print("parsing timeline");
+            await startupManager.parseTimeline(latestTimeline);
+            timelineParsed = true;
+          }
+        } else {
+          Study? theStudy = await clientManager.getStudy(element);
+          Map<String, dynamic> clientData = theStudy!.clientData ??
+              {"minAge": 36, "maxAge": 144, "status": "active"};
 
-      // now get a timeline.
-      Timeline? newTimeline =
-          await clientManager.getTimeline('NewTestStudy');
-      startupManager.parseTimeline(newTimeline!);
-      timelineParsed = true;
-      Map<String, Object> studyMap = {
-        'identifier': 'NewTestStudy',
-        'minAge': clientData['minAge'],
-        'maxAge': clientData['maxAge'],
-        'status': clientData['status'],
-        'timelineData': jsonEncode(newTimeline.toJson()),
-        'timelineUpdated': DateTime.now().toIso8601String()
-      };
-      databaseManager.addStudy(studyMap);
+          // now get a timeline.
+          Timeline? newTimeline =
+          await clientManager.getTimeline(element);
+          startupManager.parseTimeline(newTimeline!);
+          timelineParsed = true;
+          Map<String, Object> studyMap = {
+            'identifier': 'NewTestStudy',
+            'minAge': clientData['minAge'] ?? 36,
+            'maxAge': clientData['maxAge'] ?? 144,
+            'status': clientData['status'] ?? "active",
+            'timelineData': jsonEncode(newTimeline.toJson()),
+            'timelineUpdated': DateTime.now().toIso8601String()
+          };
+          databaseManager.addStudy(studyMap);
+        }
+      });
     }
 
     // now if no new timeline parsing occurred, we still need to check activityEvents for new tasks to update.
@@ -257,8 +280,8 @@ class StartupManager {
 
   /// A function that parses the appConfig and updates all the relevant pieces
   ///
-  /// Appconfig will contain studies but more importantly geofence_list!
-  Future<void> parseConfig(AppConfig appConfig) async {
+  /// Appconfig will contain studies and geofence_list!
+  Future<List<String>?> parseConfig(AppConfig appConfig) async {
     //List existingGeofences = await helper.getAllGeofences();
     // We are just going to take for granted that "geofence_list" will be a config element
     List<Map> geofenceList =
@@ -283,7 +306,10 @@ class StartupManager {
         int added = await databaseManager.addGeofence(newGeofence, false);
       }
     });
+    List<String> allStudyIds = List<String>.from(appConfig.configElements!['study_list']);
+    print("All study IDs from server app config: ${allStudyIds.toString()}");
     print("... parsed config");
+    return allStudyIds;
   }
 
   /// Parses a timeline and updates or populates a database of tasks, makes notifications, etc.

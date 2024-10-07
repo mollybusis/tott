@@ -515,6 +515,18 @@ class DatabaseManager {
     return studies;
   }
 
+  Future<List<String>> getAllStudyIdentifiers() async {
+    List allStudies = await getAllStudies();
+    List<String> studyIds = [];
+    if (allStudies.length > 0) {
+      allStudies.forEach((element) async {
+        studyIds.add(element['identifier']);
+      });
+    }
+    print("All study IDs in database: ${studyIds.toString()}");
+    return studyIds;
+  }
+
   /// Adds a study, including date last retrieved.
   Future<int> addStudy(Map<String, Object> studyInfo) async {
     Database db = await database;
@@ -526,7 +538,7 @@ class DatabaseManager {
     Database db = await database;
     List<Map<String, Object?>> studies = await db
         .query(studyTable, where: 'identifier = ?', whereArgs: [identifier]);
-    print("studies[0]");
+    print("Study returns: ${studies[0]}");
     print(studies[0].runtimeType);
 
     return studies.isNotEmpty ? studies[0] : {};
@@ -543,9 +555,11 @@ class DatabaseManager {
 
     // simply replace the timestamp in this map, and send it back.
     updatedStudy['timelineUpdated'] = newTime.toIso8601String();
+    print("Updated study given to db.update is $updatedStudy");
+    print("Attempting to update with identifier $identifier");
 
     return await db.update(studyTable, updatedStudy,
-        where: 'identifier = ?', whereArgs: [identifier]);
+        where: '_id = ?', whereArgs: [updatedStudy['_id']]);
   }
 
   /// Retrieves all app configs.
