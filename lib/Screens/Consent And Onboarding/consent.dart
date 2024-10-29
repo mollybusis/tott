@@ -571,7 +571,7 @@ class _ConsentState extends State<Consent> {
                 onChanged: (val) {
                   setState(() => firstName = val);
                 },
-                decoration: const InputDecoration(hintText: "First Name"),
+                decoration: const InputDecoration(hintText: "First Name"), // TODO: Make these requried!
               ),
               TextFormField(
                 onChanged: (val) {

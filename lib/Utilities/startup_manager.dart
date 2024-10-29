@@ -51,7 +51,7 @@ class StartupManager {
       // TODO: the above comment is from jonathan, but is this still an issue in the new version?
       Map tempData = jsonDecode(gotData.data.toString());
       print("tempData is: ${tempData}");
-      OnboardingResponse onboarding = OnboardingResponse.fromJson(jsonDecode(tempData["data"]));
+      OnboardingResponse onboarding = OnboardingResponse.fromJson(jsonDecode(gotData.data.toString()));
       print("onboarding from server");
       print(onboarding);
 
@@ -142,7 +142,7 @@ class StartupManager {
       toBeUpdated = await databaseManager.getOnboarding();
     } else {
       Map tempData = jsonDecode(currentData.data.toString());
-      toBeUpdated = OnboardingResponse.fromJson(jsonDecode(tempData["data"]));
+      toBeUpdated = OnboardingResponse.fromJson(jsonDecode(currentData.data.toString()));
     }
     if (toBeUpdated != null) {
       // replace existing participant data with updated data and re-upload.
