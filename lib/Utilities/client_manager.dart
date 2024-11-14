@@ -20,10 +20,11 @@ import 'package:talk_of_the_town/main.dart';
 
 class ClientManager {
   String? sessionToken;
+  static const baseUrl = "https://tott.gse.harvard.edu/api";
 
   Future uploadSignature(
       String firstName, String lastName, String imageData) async {
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     const route = "/v3/subpopulations/tott-sandbox/consents/signature";
     final url = Uri.parse(baseUrl + route);
 
@@ -60,7 +61,7 @@ class ClientManager {
       String email, String reAuthToken) async {
 
     const String identifier = "onboarding";
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     const route = "/v3/users/self/data/$identifier";
     final url = Uri.parse(baseUrl + route);
 
@@ -98,7 +99,7 @@ class ClientManager {
       await AuthUtils().missingLogin();
     }
     const String identifier = "onboarding"; // TODO: placeholder, sort of
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     const route = "/v3/users/self/data/$identifier";
     final url = Uri.parse(baseUrl + route);
 
@@ -124,7 +125,7 @@ class ClientManager {
       await AuthUtils().missingLogin();
     }
     const String identifier = "onboarding";
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     const route = "/v3/users/self/data/$identifier";
     final url = Uri.parse(baseUrl + route);
 
@@ -162,8 +163,8 @@ class ClientManager {
   }
 
   Future deleteParticipant(String participantId) async {
-    final url = Uri.parse(
-        'https://devebtott.gse.harvard.edu/api/v3/participants/$participantId');
+    final route = "/v3/participants/$participantId";
+    final url = Uri.parse(baseUrl + route);
     String sessionToken = await SecureStorageManager().getSessionToken();
 
     try {
@@ -387,7 +388,7 @@ class ClientManager {
   // first you have to request an upload
   Future<Map<String, dynamic>?> requestUpload(
       String filename, int numBytes, String md5) async {
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     const route = "/v3/uploads";
     Uri url = Uri.parse(baseUrl + route);
 
@@ -420,7 +421,7 @@ class ClientManager {
   // then you have to actually upload it
   Future uploadContent(String uploadUrl, String filename,
       List<int> contentBytes, String md5, String filePath) async {
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     String sessionToken = await SecureStorageManager().getSessionToken();
 
     try {
@@ -452,7 +453,8 @@ class ClientManager {
 
   // this tells bridge to decrypt, unzip, and send your data to synapse
   Future uploadComplete(String uploadId) async {
-    Uri url = Uri.parse('https://devebtott.gse.harvard.edu/api/v3/uploads/$uploadId/complete');
+    final route = '/v3/uploads/$uploadId/complete';
+    Uri url = Uri.parse(baseUrl + route);
     String sessionToken = await SecureStorageManager().getSessionToken();
 
     try {
@@ -475,9 +477,8 @@ class ClientManager {
   // get the status of your upload
   Future<bool> validateUpload(String uploadId) async {
     String sessionToken = await SecureStorageManager().getSessionToken();
-
-    final url = Uri.parse(
-        'https://devebtott.gse.harvard.edu/api/v3/uploadstatuses/$uploadId');
+    final route = '/v3/uploadstatuses/$uploadId';
+    final url = Uri.parse(baseUrl + route);
 
     try {
       final response = await http.get(
@@ -511,9 +512,9 @@ class ClientManager {
     if (loginInfo == null) {
       await AuthUtils().missingLogin();
     }
+    const route = "/v3/users/self/data/onboarding";
 
-    final url = Uri.parse(
-        "https://devebtott.gse.harvard.edu/api/v3/users/self/data/onboarding");
+    final url = Uri.parse(baseUrl + route);
 
     print("session token is ${loginInfo!.sessionToken}");
     try {
@@ -541,7 +542,7 @@ class ClientManager {
 
   /// Retrieves the appconfig from the server, necessary to check for updates.
   Future<AppConfig?> getCurrentConfig() async {
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     const route = "/v1/apps/tott-sandbox/appconfig";
     final url = Uri.parse(baseUrl + route);
 
@@ -575,7 +576,7 @@ class ClientManager {
       AuthUtils().missingLogin();
     }
 
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     final route = "/v5/studies/$studyId/participants/self/activityevents";
     final url = Uri.parse(baseUrl + route);
 
@@ -601,7 +602,7 @@ class ClientManager {
 
   /// Retrieves a "Study" object, primarily only used for initial setup.
   Future<Study?> getStudy(String identifier) async {
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     final route = "/v5/studies/$identifier";
     final url = Uri.parse(baseUrl + route);
     print("Attempting to retrieve study ${identifier} at url ${url}");
@@ -640,7 +641,7 @@ class ClientManager {
       AuthUtils().missingLogin();
     }
 
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     final route = "/v5/studies/$studyIdentifier/participants/self/timeline";
     final url = Uri.parse(baseUrl + route);
 
@@ -708,7 +709,7 @@ class ClientManager {
   ///Retrieves assessment from assessmentId listed in timelines.
   ///
   Future<Assessment?> getAssessment(String guid) async {
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     final route = "/v1/apps/tott-sandbox/assessments/$guid";
     final url = Uri.parse(baseUrl + route);
     Assessment? thisAssessment;
@@ -736,7 +737,7 @@ class ClientManager {
   Future<bool> postActivityEvent(StudyActivityEvent newEvent, {String studyId = 'NewTestStudy'}) async {
     StudyActivityEventRequest newRequest = StudyActivityEventRequest(
         eventId: newEvent.eventId, timestamp: newEvent.timestamp);
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     final route = "/v5/studies/$studyId/participants/self/activityevents?showError=true&updateBursts=false";
     final url = Uri.parse(baseUrl + route);
 
@@ -769,7 +770,7 @@ class ClientManager {
   Future<bool> postAdherenceRecord(AdherenceRecord record, {String studyId = "NewTestStudy"}) async {
     AdherenceRecordUpdates updates = AdherenceRecordUpdates(records: [record]);
 
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     final route = "/v5/studies/$studyId/participants/self/adherence";
     final url = Uri.parse(baseUrl + route);
     String sessionToken = await SecureStorageManager().getSessionToken();
@@ -794,7 +795,7 @@ class ClientManager {
   }
 
   Future deleteUser(String userId) async {
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     final route = "/v3/users/$userId";
     final url = Uri.parse(baseUrl + route);
 

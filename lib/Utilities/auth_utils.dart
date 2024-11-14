@@ -8,6 +8,7 @@ import 'package:talk_of_the_town/Utilities/shared_preferences_manager.dart';
 import 'package:talk_of_the_town/main.dart';
 
 class AuthUtils {
+  static const baseUrl = "https://tott.gse.harvard.edu/api";
   static const _chars =
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   Random _rnd = Random();
@@ -16,7 +17,7 @@ class AuthUtils {
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   Future reAuth() async {
-    const baseUrl = "https://devebtott.gse.harvard.edu/api/";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api/";
     const route = "/v3/auth/signIn";
     final url = Uri.parse(baseUrl + route);
     String? password = await SecureStorageManager().getPassword();
@@ -31,7 +32,7 @@ class AuthUtils {
   }
 
   Future<UserSessionInfo?> signIn(String email, String password) async {
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     const route = "/v4/auth/signIn";
     final url = Uri.parse(baseUrl + route);
 
@@ -76,7 +77,7 @@ class AuthUtils {
   }
 
   Future<UserSessionInfo?> autoSignIn() async {
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     const route = "/v4/auth/signIn";
     final url = Uri.parse(baseUrl + route);
 
@@ -109,7 +110,7 @@ class AuthUtils {
   }
 
   Future<bool> signUp(String email, String password) async {
-    const baseUrl = "https://devebtott.gse.harvard.edu/api";
+    //const baseUrl = "https://devebtott.gse.harvard.edu/api";
     const route = "/v3/auth/signUp";
     final url = Uri.parse(baseUrl + route);
     print("url = ${url.toString()}");
