@@ -41,6 +41,14 @@ class ClientManager {
         scope: SharingScope.allQualifiedResearchers);
 
     try {
+      print("here's the json ${json.encode(signedConsent.toJson())}");
+      try {
+        var imageBytes = base64Decode(imageData);
+        print('Decoded Image Length: ${imageBytes.length}');
+      } catch (e) {
+        print('Error decoding Base64: $e');
+      }
+
       final response = await http.post(
         url,
         headers: {
@@ -50,7 +58,7 @@ class ClientManager {
         body: json.encode(signedConsent.toJson()),
       );
       // if successful returns a UserSessionInfo object with a blank session token
-      print("signature response: ${jsonDecode(response.body)}");
+      print("Success! signature response: ${jsonDecode(response.body)}");
       return true;
     } catch (e) {
       print("Error occurred uploading signature: $e");

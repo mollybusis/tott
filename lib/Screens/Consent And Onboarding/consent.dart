@@ -609,6 +609,9 @@ class _ConsentState extends State<Consent> {
         if (_controller.isNotEmpty) {
           Uint8List? sig = await _controller.toPngBytes();
           String b64Signature = base64Encode(sig!);
+          print("Going to print the b64 signature from consent.dart");
+          debugPrint(b64Signature, wrapWidth: 1024);
+
 
           try {
             bool? success = await clientManager.uploadSignature(firstName, lastName, b64Signature);

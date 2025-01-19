@@ -57,8 +57,26 @@ class _WrapperState extends State<Wrapper> {
     // TODO: there is something gravely wrong with auto sign in
     if (autoLogin) {
       // reauth them
-      UserSessionInfo? loginInfo = await AuthUtils().autoSignIn();
-      secureStorageManager.setSessionToken(loginInfo!.sessionToken!);
+
+      //This needs to be inside of a try catch
+      try {
+        UserSessionInfo? loginInfo = await AuthUtils().autoSignIn();
+      } catch (e) {
+        //Re-route to normal login page
+        setState(() => _loading = false);
+        setState(() => target = SignInPage(email: _email, password: _password));
+      }
+
+      //Going to do another try catch here maybe? What normally happens when you sign in?
+      try {
+        secureStorageManager.setSessionToken(loginInfo!.sessionToken!);
+      } catch (e) {
+        print("Uh oh, error");
+        //I guess we can just re-route to normal login page for now here too
+        setState(() => _loading = false);
+        setState(() => target = SignInPage(email: _email, password: _password));
+      }
+
       print("after login info");
       // check if they are consented, if not send them to consent
       bool consented = await checkConsented();
@@ -81,6 +99,7 @@ class _WrapperState extends State<Wrapper> {
       // they may not have auto login, but they may have saved their credentials
       await checkSavedCredentials();
 
+      //Either way, they get sent to sign-in page - if no saved credentials, fields blank
       setState(() => target = SignInPage(email: _email, password: _password));
     }
     setState(() => _loadingMessage = null);
