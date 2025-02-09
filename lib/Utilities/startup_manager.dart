@@ -19,12 +19,15 @@ class StartupManager {
   Future runStartupFunction() async {
     // if we haven't sent them anywhere yet, we have work to do
     // get participant data
+    print("getting participant data");
     await getParticipantData();
 
     // update participant ages
+    print("updating participant ages");
     await updateAllParticipantAges();
 
     // check for updates
+    print("checking for updates");
     await checkForUpdates(); // this also calls parseConfig and parseTimeline
   }
 

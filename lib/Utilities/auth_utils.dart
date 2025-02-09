@@ -89,6 +89,7 @@ class AuthUtils {
     UserSessionInfo? loginInfo;
     try {
       loginInfo = await signIn(email!, password!);
+      print("autoSignIn Is loginInfo null?: ${loginInfo ==  null}");
     } catch (e) {
       print("Error attempting to automatically sign in. Details: $e");
       throw ApiException(-1, e.toString());

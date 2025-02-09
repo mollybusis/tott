@@ -41,6 +41,8 @@ class _CreateAccountState extends State<CreateAccount> {
     if (pwd == null) return "Try a stronger password";
     String password = pwd;
 
+    print("Checking if password $pwd is valid");
+
     // Password must be 8 or more characters long.
     if (password.length < 8) return "Password must be 8 characters or more.";
 
@@ -225,13 +227,19 @@ class _CreateAccountState extends State<CreateAccount> {
                               }
 
                               // ignore: use_build_context_synchronously
+                              // Navigator.pushAndRemoveUntil(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) =>
+                              //             AwaitEmailVerification(
+                              //                 email, password)),
+                              //     (route) => false);
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          AwaitEmailVerification(
-                                              email, password)),
-                                  (route) => false);
+                                          SignInPage(email: email, password: password)),
+                                      (route) => false);
                             }
 
                             // TODO: error report why the account was not created
@@ -255,7 +263,7 @@ class _CreateAccountState extends State<CreateAccount> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  "Don't have an account?  ",
+                  "Already have an account?  ",
                 ),
                 TextButton(
                   onPressed: () {

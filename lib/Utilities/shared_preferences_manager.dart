@@ -93,8 +93,12 @@ class SharedPreferencesManager{
   ///
   /// like consent, defaults to false
   Future<dynamic> getOnboardingCompleted() async{
-
-    return await get(onboarding_completed_key, defaultValue: false);
+    try {
+      return await get(onboarding_completed_key, defaultValue: false);
+    } catch(e){
+      print("error in getOnBoardingCompleted: $e");
+      throw(e);
+    }
   }
 
   /// Sets the most recent onboarding completion date as a string.

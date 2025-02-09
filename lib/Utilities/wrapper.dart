@@ -60,41 +60,69 @@ class _WrapperState extends State<Wrapper> {
 
       //This needs to be inside of a try catch
       try {
-        UserSessionInfo? loginInfo = await AuthUtils().autoSignIn();
+        UserSessionInfo? loginInfo = await AuthUtils().autoSignIn().timeout(const Duration(seconds: 10));
+        secureStorageManager.setSessionToken(loginInfo!.sessionToken!);
+
+        print("after login info. Is loginInfo null?: ${loginInfo == null}");
+
+        // check if they are consented, if not send them to consent
+        print("About to check consented");
+        bool consented = await checkConsented();
+        print("checked consented, value: $consented");
+        // if (!consented) {
+        //   print("Inside the if...");
+        //   setState(() => target = const Consent());
+        //   return;
+        // }
+
+        // check if they are onboarded, if not send them to onboarding
+        print("About to check onboarded");
+        // dynamic onboardDynamic = await checkOnboarded();
+        // print("onboardDynamic: $onboardDynamic");
+        bool onboarded = await checkOnboarded();
+        print("Checked onboarded, value: $onboarded");
+        // if (!onboarded) {
+        //   setState(() => target = const ToTOnboarding());
+        //   return;
+        // }
+
+        //DO I NEED TO DO THIS?
+        //await clientRequests();
+
+        //send them to correct page
+        setState(() => _loading = false);
+
+          if (!consented) {
+            setState(() => target = const Consent());
+          } else if (!onboarded) {
+              setState(() => target = const ToTOnboarding());
+          } else {
+              setState(() => target = const Home());
+          }
+
+        return;
+        //setState(() => target = const Home());
+
       } catch (e) {
+
+        print("Uh oh, the error was: ${e.toString()}");
         //Re-route to normal login page
         setState(() => _loading = false);
         setState(() => target = SignInPage(email: _email, password: _password));
       }
 
       //Going to do another try catch here maybe? What normally happens when you sign in?
-      try {
-        secureStorageManager.setSessionToken(loginInfo!.sessionToken!);
-      } catch (e) {
-        print("Uh oh, error");
-        //I guess we can just re-route to normal login page for now here too
-        setState(() => _loading = false);
-        setState(() => target = SignInPage(email: _email, password: _password));
-      }
+      // try {
+      //   print("Wrapper Second try catch Is loginInfo null?: ${loginInfo == null}");
+      //   secureStorageManager.setSessionToken(loginInfo!.sessionToken!);
+      // } catch (e) {
+      //   print("Uh oh, the error was: ${e.toString()}");
+      //   //I guess we can just re-route to normal login page for now here too
+      //   setState(() => _loading = false);
+      //   setState(() => target = SignInPage(email: _email, password: _password));
+      // }
 
-      print("after login info");
-      // check if they are consented, if not send them to consent
-      bool consented = await checkConsented();
-      if (!consented) {
-        setState(() => target = const Consent());
-        return;
-      }
 
-      // check if they are onboarded, if not send them to onboarding
-      bool onboarded = await checkOnboarded();
-      if (!onboarded) {
-        setState(() => target = const ToTOnboarding());
-        return;
-      }
-
-      await clientRequests();
-      // send them to home page
-      setState(() => target = const Home());
     } else {
       // they may not have auto login, but they may have saved their credentials
       await checkSavedCredentials();
@@ -125,7 +153,12 @@ class _WrapperState extends State<Wrapper> {
   }
 
   Future<bool> checkOnboarded() async {
-    return await SharedPreferencesManager().getOnboardingCompleted();
+    try {
+      return await secureStorageManager.getOnboarded();
+    } catch(e){
+      print("error in checkOnboarded: $e");
+      throw e;
+    }
   }
 
   @override
