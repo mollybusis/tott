@@ -53,7 +53,7 @@ class _CreateAccountState extends State<CreateAccount> {
 
     // Password must contain at least one lowercase letter.
     if (!password.contains(RegExp(r'[a-z]'))) {
-      return "Passsword must contain at least one lowercase lettter.";
+      return "Password must contain at least one lowercase lettter.";
     }
 
     // Password must contain at least one special character (non-alphanumeric).
@@ -72,10 +72,7 @@ class _CreateAccountState extends State<CreateAccount> {
     }
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text(
-          "Talk of the Town")
-      ),
+      appBar: AppBar(title: const Text("Talk of the Town")),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -123,7 +120,9 @@ class _CreateAccountState extends State<CreateAccount> {
                                 viewPassword
                                     ? Icons.visibility
                                     : Icons.visibility_off,
-                                color: viewPassword ? Colors.lightGreenAccent : Colors.grey[600],
+                                color: viewPassword
+                                    ? Colors.lightGreenAccent
+                                    : Colors.grey[600],
                               ),
                             ),
                           ),
@@ -134,10 +133,16 @@ class _CreateAccountState extends State<CreateAccount> {
                         ),
                         TextFormField(
                           validator: (val) {
-                            String result = checkPasswordValid(val);
-                            if (result != ":)") {
-                              return result;
+                            // String result = checkPasswordValid(val);
+                            // if (result != ":)") {
+                            //   return result;
+                            // }
+
+                            // Then check if the passwords match
+                            if (val != password) {
+                              return "Passwords do not match.";  // Return error if passwords don't match
                             }
+
                             return null; // Return null if validation is successful
                           },
                           onChanged: (val) => setState(() => password2 = val),
@@ -150,7 +155,9 @@ class _CreateAccountState extends State<CreateAccount> {
                                 viewPassword2
                                     ? Icons.visibility
                                     : Icons.visibility_off,
-                                color: viewPassword2 ? Colors.lightGreenAccent : Colors.grey[600],
+                                color: viewPassword2
+                                    ? Colors.lightGreenAccent
+                                    : Colors.grey[600],
                               ),
                             ),
                           ),
@@ -171,7 +178,8 @@ class _CreateAccountState extends State<CreateAccount> {
                             setState(() =>
                                 doAutoLogin = (val != null && val == true));
                           },
-                          title: const Text("Automatic Login", style: TextStyle(color: Colors.grey)),
+                          title: const Text("Automatic Login",
+                              style: TextStyle(color: Colors.grey)),
                         ),
                         CheckboxListTile(
                           value: rememberMe,
@@ -179,67 +187,78 @@ class _CreateAccountState extends State<CreateAccount> {
                             setState(() =>
                                 rememberMe = (val != null && val == true));
                           },
-                          title: const Text("Remember Credentials", style: TextStyle(color: Colors.grey)),
+                          title: const Text("Remember Credentials",
+                              style: TextStyle(color: Colors.grey)),
                         ),
                         const SizedBox(
                           height: 16,
                         ),
                         OutlinedButton(
                           onPressed: () async {
-                            setState(() => error = "");
-                            // if (!_formKey.currentState!.validate()) return;
+                            // Trigger form validation
+                            if (_formKey.currentState?.validate() ?? false) {
+                              print("Form is valid");
+                              // Proceed only if the form is valid
+                              setState(() => error = "");
+                              // if (!_formKey.currentState!.validate()) return;
 
-                            setState(() => loading = true);
-                            bool success = false;
-                            ApiException? exception;
-                            // try {
-                            //   success = await auth.signUp(
-                            //       "mileszoltak@gmail.com", "big!Cindy2011");
-                            //   exception = null;
-                            // } catch (e) {
-                            //   if (e.runtimeType == ApiException) {
-                            //     exception = e as ApiException?;
-                            //   }
-                            // }
-                            try {
-                              success = await auth.signUp(email, password);
-                              exception = null;
-                            } catch (e) {
-                              if (e.runtimeType == ApiException) {
-                                exception = e as ApiException?;
+                              setState(() => loading = true);
+                              bool success = false;
+                              ApiException? exception;
+                              // try {
+                              //   success = await auth.signUp(
+                              //       "mileszoltak@gmail.com", "big!Cindy2011");
+                              //   exception = null;
+                              // } catch (e) {
+                              //   if (e.runtimeType == ApiException) {
+                              //     exception = e as ApiException?;
+                              //   }
+                              // }
+                              try {
+                                success = await auth.signUp(email, password);
+                                exception = null;
+                              } catch (e) {
+                                if (e.runtimeType == ApiException) {
+                                  exception = e as ApiException?;
+                                }
                               }
-                            }
-                            // check if there were problems logging in
-                            if (exception != null) {
-                              setState(() =>
-                              error = "Error: ${exception.toString()}");
-                            } else if (success != true) {
-                              setState(() => error =
-                              "Error: Please check your connection and your credentials.");
-                            } else if (success) {
-                              //we are authenticated, update the autoLogin and "remember me" prefs
-                              secureStorageManager
-                                  .setAutoLoginPreference(doAutoLogin);
-                              if (doAutoLogin || rememberMe) {
-                                secureStorageManager.setLoginInfo(email, password);
-                              } else {
-                                secureStorageManager.forgetLoginInfo();
-                              }
+                              // check if there were problems logging in
+                              if (exception != null) {
+                                setState(() =>
+                                    error = "Error: ${exception.toString()}");
+                              } else if (success != true) {
+                                setState(() => error =
+                                    "Error: Please check your connection and your credentials.");
+                              } else if (success) {
+                                //we are authenticated, update the autoLogin and "remember me" prefs
+                                secureStorageManager
+                                    .setAutoLoginPreference(doAutoLogin);
+                                if (doAutoLogin || rememberMe) {
+                                  secureStorageManager.setLoginInfo(
+                                      email, password);
+                                } else {
+                                  secureStorageManager.forgetLoginInfo();
+                                }
 
-                              // ignore: use_build_context_synchronously
-                              // Navigator.pushAndRemoveUntil(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) =>
-                              //             AwaitEmailVerification(
-                              //                 email, password)),
-                              //     (route) => false);
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          SignInPage(email: email, password: password)),
-                                      (route) => false);
+                                // ignore: use_build_context_synchronously
+                                // Navigator.pushAndRemoveUntil(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) =>
+                                //             AwaitEmailVerification(
+                                //                 email, password)),
+                                //     (route) => false);
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SignInPage(
+                                            email: email, password: password)),
+                                    (route) => false);
+                              }
+                            } else {
+                              // Form is invalid, print validation errors
+                              print("Form is not valid");
+                              // Optionally, you can show a message to the user indicating the validation failed
                             }
 
                             // TODO: error report why the account was not created
