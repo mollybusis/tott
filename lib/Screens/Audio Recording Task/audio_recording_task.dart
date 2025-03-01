@@ -283,6 +283,9 @@ class _AudioRecordingTaskState extends State<AudioRecordingTask> {
     } else {
       // this is the case where there was an error uploading
       // TODO: give them some sort of explanation, or think of a more appropraite way of handling this
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Upload failed. Try again later.')));
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const Home()), (r) => false);
     }
@@ -729,7 +732,7 @@ class _AudioRecordingTaskState extends State<AudioRecordingTask> {
         ],
       );
     } else {
-      return AudioPlayerComponent(audioPlayer, position);
+      return AudioPlayerComponent(audioPlayer, position, audioFile);
     }
   }
 

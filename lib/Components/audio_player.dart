@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:talk_of_the_town/Components/audio_recorder.dart';
 
 class AudioPlayerComponent extends StatefulWidget {
   AudioPlayer audioPlayer;
   Duration position;
-  AudioPlayerComponent(this.audioPlayer, this.position, {super.key});
+  File? audioFile;
+  AudioPlayerComponent(this.audioPlayer, this.position, this.audioFile, {super.key});
 
   @override
   State<AudioPlayerComponent> createState() => _AudioPlayerComponentState();
@@ -15,6 +17,7 @@ class AudioPlayerComponent extends StatefulWidget {
 class _AudioPlayerComponentState extends State<AudioPlayerComponent> {
   bool isPlayable = false;
   bool isPlaying = false;
+  bool isComplete = false;
 
   Duration duration = Duration.zero;
 
@@ -22,24 +25,74 @@ class _AudioPlayerComponentState extends State<AudioPlayerComponent> {
   void initState() {
     super.initState();
     widget.audioPlayer.onPlayerStateChanged.listen((state) {
-      setState(() {
-        isPlaying = state == PlayerState.playing;
-      });
+      if (mounted) {
+        setState(() {
+          isPlaying = state == PlayerState.playing;
+        });
+      }
     });
 
     widget.audioPlayer.onDurationChanged.listen((newDuration) {
-      setState(() => duration = newDuration);
+      if(mounted){
+        setState(() => duration = newDuration);
+      }
     });
 
     widget.audioPlayer.onPositionChanged.listen((newPosition) {
-      setState(() => widget.position = newPosition);
+      if(mounted) {
+        setState(() => widget.position = newPosition);
+        setState(() {
+          isComplete = widget.audioPlayer.state == PlayerState.completed;
+        });
+      }
+    });
+    
+    widget.audioPlayer.onSeekComplete.listen((event){
+      print("SEEKING COMPLETE>>>>>>>>>!!!!!");
+      //await widget.audioPlayer.pause();
     });
 
-    widget.audioPlayer.onPlayerComplete.listen((event) {
-      setState(() => widget.position = duration);
+    widget.audioPlayer.onPlayerComplete.listen((event) async {
+      print("AUDIO IS DONE PLAYING");
+      setState(() {
+        isComplete = widget.audioPlayer.state == PlayerState.completed;
+      });
+
+      if(mounted) {
+        print("Audio completed. About to try and reset the source...???");
+
+        setState(() {
+          widget.audioPlayer.setSourceDeviceFile(widget.audioFile!.path);
+        });
+
+        // setState(() {
+        //   widget.audioPlayer.setSourceDeviceFile((widget.audioPlayer.source)!.path);
+        // });
+
+
+        // Set position to zero
+        setState(() => widget.position = Duration.zero);
+        print("setState widget position to 0");
+
+        // Seek to the beginning and log
+        print("Player state before seek: ${widget.audioPlayer.state}");
+        if (widget.audioPlayer.state != PlayerState.playing) {
+          print("Player is not in playing state, seeking might fail");}
+
+        await widget.audioPlayer.seek(Duration.zero).timeout(const Duration(seconds: 10));
+        print("Seeked to the beginning.");
+
+
+
+        // Resume playback
+        await widget.audioPlayer.pause();
+        print("Paused.");
+        //setState(() => widget.position = Duration.zero);
+      }
+
     });
 
-    print("aba this all happend");
+    print("Init state happened");
   }
 
   @override
@@ -72,9 +125,28 @@ class _AudioPlayerComponentState extends State<AudioPlayerComponent> {
             value: widget.position.inMilliseconds.toDouble(),
             onChanged: (value) async {
               final pos = Duration(milliseconds: value.toInt());
-              await widget.audioPlayer.seek(pos);
-              setState(() => widget.position = pos);
-              await widget.audioPlayer.resume();
+              if(widget.audioPlayer.state == PlayerState.completed){
+                print("it's completed");
+                setState(() => widget.position = const Duration(milliseconds: 0));
+                await widget.audioPlayer.resume();
+              }
+              if (widget.audioPlayer.state == PlayerState.playing || widget.audioPlayer.state == PlayerState.paused) {
+                print("gonna seek");
+                await widget.audioPlayer.seek(pos).timeout(const Duration(seconds: 10));
+                print("We seeked");
+                setState(() => widget.position = pos);
+                if(widget.audioPlayer.state == PlayerState.playing){
+                  await widget.audioPlayer.resume();
+                }
+                else{
+                  await widget.audioPlayer.pause(); //just changed this from resume
+                }
+                //await widget.audioPlayer.pause(); //just changed this from resume
+              }
+
+              // await widget.audioPlayer.seek(pos);
+              // setState(() => widget.position = pos);
+              // await widget.audioPlayer.resume();
             },
           ),
           Padding(
@@ -96,6 +168,13 @@ class _AudioPlayerComponentState extends State<AudioPlayerComponent> {
                 if (isPlaying) {
                   await widget.audioPlayer.pause();
                 } else {
+                  //check the position
+                  //if it's at the end, put it to zero
+                  if(isComplete){
+                    print("OH YEAH ITS COMPLETE HELL YEAH");
+                    await widget.audioPlayer.seek(Duration.zero);
+                  }
+
                   await widget.audioPlayer.resume();
                 }
               },
