@@ -120,7 +120,7 @@ class _RequestPermissionsState extends State<RequestPermissions> {
                           freeze = false;
                         });
                         await Future.delayed(const Duration(milliseconds: 750));
-                        introKey.currentState!.animateScroll(2);
+                        introKey.currentState!.animateScroll(2, false);
                       } else {
                         showSnackBar(context, "Please enable microphone permission to continue.");
                       }
@@ -169,7 +169,7 @@ class _RequestPermissionsState extends State<RequestPermissions> {
                           freeze = false;
                         });
                         await Future.delayed(const Duration(milliseconds: 750));
-                        introKey.currentState!.animateScroll(3);
+                        introKey.currentState!.animateScroll(3, false);
                       } else {
                         showSnackBar(context, "Please enable location permission to continue.");
                       }
@@ -219,7 +219,7 @@ class _RequestPermissionsState extends State<RequestPermissions> {
                             freeze = false;
                           });
                           await Future.delayed(const Duration(milliseconds: 750));
-                          introKey.currentState!.animateScroll(4);
+                          introKey.currentState!.animateScroll(4, false);
                         } else {
                           showSnackBar(context, "Please enable background location permission to continue.");
                         }
@@ -269,7 +269,7 @@ class _RequestPermissionsState extends State<RequestPermissions> {
                           freeze = false;
                         });
                         await Future.delayed(const Duration(milliseconds: 750));
-                        introKey.currentState!.animateScroll(5);
+                        introKey.currentState!.animateScroll(5, false);
                       } else {
                         showSnackBar(context, "Please enable notifications permission to continue.");
                       }
@@ -320,7 +320,7 @@ class _RequestPermissionsState extends State<RequestPermissions> {
                           freeze = false;
                         });
                         await Future.delayed(const Duration(milliseconds: 750));
-                        introKey.currentState!.animateScroll(6);
+                        introKey.currentState!.animateScroll(6, false);
                         return;
                       }
 
@@ -341,7 +341,7 @@ class _RequestPermissionsState extends State<RequestPermissions> {
                           freeze = false;
                         });
                         await Future.delayed(const Duration(milliseconds: 750));
-                        introKey.currentState!.animateScroll(6);
+                        introKey.currentState!.animateScroll(6, false);
                       } else {
                         // ignore: use_build_context_synchronously
                         showSnackBar(context, "Please enable storage permission to continue.");

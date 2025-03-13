@@ -59,7 +59,7 @@ class ToTOnboardingState extends State<ToTOnboarding> {
     if (num == 1) {
       return ignoreOne ? "" : " 1st ";
     } else if (num == 2) {
-      return " 2nd ";
+      return "2nd";
     } else if (num == 3) {
       return " 3rd ";
     } else {
@@ -144,6 +144,7 @@ class ToTOnboardingState extends State<ToTOnboarding> {
                       child: OutlinedButton(
                         onPressed: () {
                           setState(() => currentStep--);
+                          print("set currentStep to $currentStep");
                         },
                         child: const Text('Back'),
                       ),
@@ -183,6 +184,7 @@ class ToTOnboardingState extends State<ToTOnboarding> {
                                 "Please select at least one timeslot.");
                           } else {
                             setState(() => currentStep++);
+                            print("set currentStep to $currentStep");
                           }
                         },
                         child: const Text("Next"),
@@ -642,6 +644,9 @@ class ToTOnboardingState extends State<ToTOnboarding> {
     return IntroductionScreen(
       resizeToAvoidBottomInset: false,
       onChange: (idx) {
+        // if(idx > 0){
+        //    showBackButton = true;
+        // }
         //TODO: it might be a bit more graceful if we maintain a list of len(numChildren) of ints where each one represents the stepIdx for each individual stepper. how hard could it be?
         //if we are going forward from one stepper to another, set currentStep to 0
         if (screenIdx > 1 && screenIdx < numChildren! + 1 && screenIdx < idx) {
@@ -660,6 +665,7 @@ class ToTOnboardingState extends State<ToTOnboarding> {
         }
       },
       canProgress: (idx) {
+        print("checking if I can progress, idx = $idx");
         try {
           if (idx == 1 && numChildren == null) {
             return false;
@@ -759,85 +765,16 @@ class ToTOnboardingState extends State<ToTOnboarding> {
                   ),
                   RadioListTile(
                       title: Text(
-                        "6",
+                        "1",
                         style: radioTileTextStyle,
                       ),
                       fillColor: MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
-                        return numChildren == 6
+                        return numChildren == 1
                             ? Colors.lightGreen
                             : Colors.grey;
                       }),
-                      value: 6,
-                      groupValue: numChildren,
-                      onChanged: (val) {
-                        setState(() {
-                          numChildren = val;
-                          childrenData = List.generate(
-                            numChildren!,
-                            (index) => <String,
-                                dynamic>{}, // Initialize each map as an empty map
-                          );
-                        });
-                      }),
-                  RadioListTile(
-                      title: Text(
-                        "5",
-                        style: radioTileTextStyle,
-                      ),
-                      fillColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        return numChildren == 5
-                            ? Colors.lightGreen
-                            : Colors.grey;
-                      }),
-                      value: 5,
-                      groupValue: numChildren,
-                      onChanged: (val) {
-                        setState(() {
-                          numChildren = val;
-                          childrenData = List.generate(
-                            numChildren!,
-                            (index) => <String,
-                                dynamic>{}, // Initialize each map as an empty map
-                          );
-                        });
-                      }),
-                  RadioListTile(
-                      title: Text(
-                        "4",
-                        style: radioTileTextStyle,
-                      ),
-                      fillColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        return numChildren == 4
-                            ? Colors.lightGreen
-                            : Colors.grey;
-                      }),
-                      value: 4,
-                      groupValue: numChildren,
-                      onChanged: (val) {
-                        setState(() {
-                          numChildren = val;
-                          childrenData = List.generate(
-                            numChildren!,
-                            (index) => <String,
-                                dynamic>{}, // Initialize each map as an empty map
-                          );
-                        });
-                      }),
-                  RadioListTile(
-                      title: Text(
-                        "3",
-                        style: radioTileTextStyle,
-                      ),
-                      fillColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        return numChildren == 3
-                            ? Colors.lightGreen
-                            : Colors.grey;
-                      }),
-                      value: 3,
+                      value: 1,
                       groupValue: numChildren,
                       onChanged: (val) {
                         setState(() {
@@ -874,16 +811,85 @@ class ToTOnboardingState extends State<ToTOnboarding> {
                       }),
                   RadioListTile(
                       title: Text(
-                        "1",
+                        "3",
                         style: radioTileTextStyle,
                       ),
                       fillColor: MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
-                        return numChildren == 1
+                        return numChildren == 3
                             ? Colors.lightGreen
                             : Colors.grey;
                       }),
-                      value: 1,
+                      value: 3,
+                      groupValue: numChildren,
+                      onChanged: (val) {
+                        setState(() {
+                          numChildren = val;
+                          childrenData = List.generate(
+                            numChildren!,
+                            (index) => <String,
+                                dynamic>{}, // Initialize each map as an empty map
+                          );
+                        });
+                      }),
+                  RadioListTile(
+                      title: Text(
+                        "4",
+                        style: radioTileTextStyle,
+                      ),
+                      fillColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                        return numChildren == 4
+                            ? Colors.lightGreen
+                            : Colors.grey;
+                      }),
+                      value: 4,
+                      groupValue: numChildren,
+                      onChanged: (val) {
+                        setState(() {
+                          numChildren = val;
+                          childrenData = List.generate(
+                            numChildren!,
+                            (index) => <String,
+                                dynamic>{}, // Initialize each map as an empty map
+                          );
+                        });
+                      }),
+                  RadioListTile(
+                      title: Text(
+                        "5",
+                        style: radioTileTextStyle,
+                      ),
+                      fillColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                        return numChildren == 5
+                            ? Colors.lightGreen
+                            : Colors.grey;
+                      }),
+                      value: 5,
+                      groupValue: numChildren,
+                      onChanged: (val) {
+                        setState(() {
+                          numChildren = val;
+                          childrenData = List.generate(
+                            numChildren!,
+                            (index) => <String,
+                                dynamic>{}, // Initialize each map as an empty map
+                          );
+                        });
+                      }),
+                  RadioListTile(
+                      title: Text(
+                        "6",
+                        style: radioTileTextStyle,
+                      ),
+                      fillColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                        return numChildren == 6
+                            ? Colors.lightGreen
+                            : Colors.grey;
+                      }),
+                      value: 6,
                       groupValue: numChildren,
                       onChanged: (val) {
                         setState(() {
