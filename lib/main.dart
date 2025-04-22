@@ -10,13 +10,15 @@ import 'package:rxdart/rxdart.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'Utilities/notification_plugin.dart';
 
 UserSessionInfo? loginInfo;
 
 /* ~~~~~~~ This is where the land of local notifications begins ~~~~~ */
 //load up FLN
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+// final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+//     notificationsPlugin;
+//Instead, we're using that import.
 
 // how we will represent notifications
 class ReceivedNotification {
@@ -98,7 +100,7 @@ Future<void> main() async {
   await _configureLocalTimeZone();
   // dealing with the case where the app is launched from a notification
   final NotificationAppLaunchDetails? notificationAppLaunchDetails =
-      await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+      await notificationsPlugin.getNotificationAppLaunchDetails();
 
   bool fromNotification =
       notificationAppLaunchDetails?.didNotificationLaunchApp ?? false;
@@ -187,7 +189,7 @@ Future<void> main() async {
     iOS: initializationSettingsDarwin,
   );
 
-  await flutterLocalNotificationsPlugin.initialize(
+  await notificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse:
         (NotificationResponse notificationResponse) {

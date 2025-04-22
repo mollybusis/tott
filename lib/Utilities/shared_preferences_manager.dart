@@ -8,6 +8,7 @@ import 'package:flutter_background_geolocation/flutter_background_geolocation.da
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'notification_plugin.dart';
 
 /// This retains various settings for the app from one run to the next
 ///
@@ -139,7 +140,7 @@ class SharedPreferencesManager{
   /// In this file for largely historical reasons, likely to be moved at a later date.
   Future<void> scheduleNotification(DateTime atTime, String projectName, String ageChild, String whichChild) async {
     Map taskPayload = {"task":projectName, "child":whichChild, "age":ageChild, "notificationBased":"true"};
-    await flutterLocalNotificationsPlugin.zonedSchedule(
+    await notificationsPlugin.zonedSchedule(
         0, '$projectName activity!', 'Ready to do an activity with your $ageChild-year-old?',
         tz.TZDateTime.from(atTime, tz.local),
         const NotificationDetails(

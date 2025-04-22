@@ -7,6 +7,7 @@ import 'package:talk_of_the_town/Models/task_payload.dart';
 import 'package:talk_of_the_town/main.dart';
 import 'dart:convert';
 import 'package:timezone/timezone.dart' as tz;
+import 'notification_plugin.dart';
 
 class NotificationManager {
   TaskPayload genericNotificationPayload = TaskPayload('generic', 'manualtask',
@@ -15,10 +16,12 @@ class NotificationManager {
       notificationBased: true,
       triggerCustomEvent: 'last_default_task');
 
+  NotificationManager();
+
   // requests notification permissions.  TODO: not sure yet when to call this in the app... maybe right after onboarding?
   Future<void> _requestPermissions() async {
     if (Platform.isIOS || Platform.isMacOS) {
-      await flutterLocalNotificationsPlugin
+      await notificationsPlugin
           .resolvePlatformSpecificImplementation<
               IOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
@@ -26,7 +29,7 @@ class NotificationManager {
             badge: true,
             sound: true,
           );
-      await flutterLocalNotificationsPlugin
+      await notificationsPlugin
           .resolvePlatformSpecificImplementation<
               MacOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
@@ -36,7 +39,7 @@ class NotificationManager {
           );
     } else if (Platform.isAndroid) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+      notificationsPlugin.resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>();
 
       final bool? grantedNotificationPermission =
@@ -46,7 +49,7 @@ class NotificationManager {
 
   //returns list of PendingNotifications. Is convenient for use in main.dart
   Future<List<PendingNotificationRequest>> checkUpcomingNotifications() async {
-    return await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    return await notificationsPlugin.pendingNotificationRequests();
   }
 
   /// Displays a pop-up with a list of all pending notifications.
@@ -77,7 +80,7 @@ class NotificationManager {
   Future<void> createImmediateNotification() async {
     _requestPermissions();
     print("Notification: Now.");
-    await FlutterLocalNotificationsPlugin().show(
+    await notificationsPlugin.show(
         0,
         'Task notification',
         'This is an immediately triggered notification',
@@ -98,7 +101,7 @@ class NotificationManager {
       DateTime atTime = DateTime.now().add(Duration(seconds: delay));
       updatedPayload = payload;
       updatedPayload.notificationDateTime = atTime;
-      updatedPayload!.notificationBased = true;
+      updatedPayload.notificationBased = true;
     }
 
     // use payload to populate notification title and text.
@@ -111,10 +114,11 @@ class NotificationManager {
       } else {
         singleMulti = 'for you to do with your children!';
       }
+    } else {
+      singleMulti = 'for you!';
     }
-    singleMulti = 'for you!';
 
-    await FlutterLocalNotificationsPlugin().zonedSchedule(
+    await notificationsPlugin.zonedSchedule(
         0,
         'Activity available!',
         'Talk of the Town has an activity available $singleMulti',
@@ -149,10 +153,11 @@ class NotificationManager {
       } else {
         singleMulti = 'for you to do with your children!';
       }
+    } else {
+      singleMulti = 'for you!';
     }
-    singleMulti = 'for you!';
 
-    await FlutterLocalNotificationsPlugin().zonedSchedule(
+    await notificationsPlugin.zonedSchedule(
         0,
         'Activity available!',
         'Talk of the Town has an activity available $singleMulti',
@@ -181,7 +186,7 @@ class NotificationManager {
     }
 
     Map notificationPayload = task.toMap();
-    await FlutterLocalNotificationsPlugin().show(
+    await notificationsPlugin.show(
         0,
         'You found an activity!',
         'There is a nearby activity at $locationName $singleMulti!',
