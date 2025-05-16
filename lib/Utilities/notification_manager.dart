@@ -118,20 +118,10 @@ class NotificationManager {
       singleMulti = 'for you!';
     }
 
-    await notificationsPlugin.zonedSchedule(
-        0,
-        'Activity available!',
-        'Talk of the Town has an activity available $singleMulti',
-        tz.TZDateTime.now(tz.local).add(Duration(seconds: delay)),
-        const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'tott_notifications', 'Talk of the Town notifications')),
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.wallClockTime,
-        payload: jsonEncode(updatedPayload != null
-            ? updatedPayload.toMap()
-            : genericNotificationPayload.toMap()));
+    // call the notification at time method with time adjusted with delay
+    createNotificationAtTime(tz.TZDateTime.now(tz.local).add(Duration(seconds: delay)),
+        payload: updatedPayload ?? payload);
+
   }
 
   // schedule a notification for a specific datetime in the future
@@ -220,7 +210,7 @@ class NotificationManager {
   Future<void> notifyParticipantAtNextOpportunity(Participant participant, TaskPayload notificationPayload, {Duration? minimumDelay}) async {
     // participant object contains the windows of availability.
     DateTime currentTime = DateTime.now().toLocal();
-    print("Finding time for notification. Availabile times: " + participant.validTimes.toString());
+    print("Finding time for notification. Available times: " + participant.validTimes.toString());
     if (minimumDelay != null) {
       // moves the whole process forward in the future.
       currentTime = currentTime.add(minimumDelay);
