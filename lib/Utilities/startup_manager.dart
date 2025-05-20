@@ -179,14 +179,15 @@ class StartupManager {
     List haveConfigs = await databaseManager.getAllAppConfigs();
     List<String> studyIdList = [];
     print(currentConfig?.toString() ?? "App config returned null");
+    print("WTF");
     if (haveConfigs.length > 0) {
       // compare modifiedon.
       Map lastConfig = haveConfigs.last;
       DateTime lastModified = DateTime.parse(lastConfig['modifiedOn']);
       // compare datetimes
-      if (currentConfig!.modifiedOn!.isAfter(lastModified)) {
+      if (true || currentConfig!.modifiedOn!.isAfter(lastModified)) {
         // now we need to do all the parsing of new activities and stuff.
-        int irrel = await databaseManager.addAppConfig(currentConfig);
+        int irrel = await databaseManager.addAppConfig(currentConfig!);
         // The parsing system
         studyIdList = await startupManager.parseConfig(currentConfig) ?? [];
       } else {
@@ -290,6 +291,7 @@ class StartupManager {
     List<Map> geofenceList =
         List<Map>.from(appConfig.configElements!['geofence_list']);
     // translate the geofenceList into Geofence objects and update the database accordingly
+    print(geofenceList);
     geofenceList.forEach((element) async {
       // check if the geofence is already in the database
       Map<String, dynamic>? testGeofence =

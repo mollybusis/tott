@@ -20,7 +20,8 @@ import 'package:talk_of_the_town/main.dart';
 
 class ClientManager {
   String? sessionToken;
-  static const baseUrl = "https://tott.gse.harvard.edu/api";
+  // TODO MOLLY BEFORE PUSHING REMOVE DEV
+  static const baseUrl = "https://devebtott.gse.harvard.edu/api";
 
   Future uploadSignature(
       String firstName, String lastName, String imageData) async {

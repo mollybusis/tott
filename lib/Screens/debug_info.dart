@@ -44,7 +44,12 @@ class DebugInfo extends StatelessWidget {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text("Upcoming Notifications"),
-                          content: ListView.separated(
+                          content: SizedBox(
+                            // Constrain the height of the ListView
+                            height: 300,
+                            width: double.maxFinite, // Ensure it can take all horizontal space needed
+                            child: ListView.separated(
+                              shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 return ListTile(
                                   title: Text(upcomingNotifications[index].title ?? "Notification title is null..."),
@@ -53,7 +58,9 @@ class DebugInfo extends StatelessWidget {
                               separatorBuilder: (context, index) =>
                                   const Divider(color: Colors.lightGreen),
                               itemCount: upcomingNotifications.length),
+                          ),
                         );
+
                       });
                 },
               ),
@@ -66,6 +73,7 @@ class DebugInfo extends StatelessWidget {
                   List<String> activeGeofenceNames =
                       await geofenceManager.getActiveGeofences();
 
+                  print(activeGeofenceNames);
                   // ignore: use_build_context_synchronously
                   await showDialog(
                       context: context,
@@ -137,19 +145,30 @@ class DebugInfo extends StatelessWidget {
                         return AlertDialog(
                           title: const Text("Geofence names and distances"),
                           content: geofenceNamesAndDistances.isNotEmpty
-                              ? ListView.separated(
-                                  itemBuilder: (context, index) {
-                                    return ListTile(
-                                      title: Text(
-                                          geofenceNamesAndDistances[index]),
-                                    );
-                                  },
-                                  separatorBuilder: (context, index) =>
-                                      const Divider(
-                                        color: Colors.lightGreen,
-                                      ),
-                                  itemCount: geofenceNamesAndDistances.length)
+                              ? SizedBox(
+                            // Constrain the height of the ListView
+                            height: 300,
+                            width: double.maxFinite, // Ensure it can take all horizontal space needed
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              itemCount: geofenceNamesAndDistances.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  title: Text(geofenceNamesAndDistances[index]),
+                                );
+                              },
+                              separatorBuilder: (context, index) => const Divider(
+                                color: Colors.lightGreen,
+                              ),
+                            ),
+                          )
                               : const Text("No geofences."),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text("Close"),
+                            ),
+                          ],
                         );
                       });
                 },

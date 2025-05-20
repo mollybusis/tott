@@ -238,27 +238,43 @@ class MyApp extends StatelessWidget {
         title: 'Talk of the Town',
         themeMode: ThemeMode.dark,
         darkTheme: ThemeData.dark().copyWith(
-            checkboxTheme:
-                const CheckboxThemeData(side: BorderSide(color: Colors.grey)),
-            listTileTheme: const ListTileThemeData(
-                titleTextStyle: TextStyle(color: Colors.grey, fontSize: 16)),
-            textButtonTheme: TextButtonThemeData(
-              style:
-                  TextButton.styleFrom(foregroundColor: Colors.lightGreen[300]),
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.lightGreen,
+            brightness: Brightness.dark,
+          ),
+          checkboxTheme: const CheckboxThemeData(
+            side: BorderSide(color: Colors.grey),
+          ),
+          listTileTheme: const ListTileThemeData(
+            titleTextStyle: TextStyle(color: Colors.grey, fontSize: 16),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.lightGreen[300],
             ),
-            outlinedButtonTheme: OutlinedButtonThemeData(
-              style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.lightGreen[300],
-                  textStyle: const TextStyle(fontSize: 18),
-                  side: const BorderSide(width: 2.0, color: Colors.grey)),
+          ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.lightGreen[300],
+              textStyle: const TextStyle(fontSize: 18),
+              side: const BorderSide(width: 2.0, color: Colors.grey),
             ),
-            useMaterial3: true,
-            appBarTheme: const AppBarTheme(
-              foregroundColor: Colors.white,
-              backgroundColor:
-                  Colors.lightGreen, // Set the default AppBar background color.
+          ),
+          appBarTheme: const AppBarTheme(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.lightGreen,
+          ),
+          dialogTheme: DialogTheme(
+            backgroundColor: const Color(0xFF2E2E2E),
+            titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
+            contentTextStyle: const TextStyle(color: Colors.grey, fontSize: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen)),
+          ),
+        ),
+
         debugShowCheckedModeBanner: false,
         home: const Wrapper(),
       ),

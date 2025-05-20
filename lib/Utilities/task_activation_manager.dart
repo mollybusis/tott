@@ -53,7 +53,7 @@ class TaskActivationManager {
       startAtOnce.add(element.eventId!);
     });
 
-    if (startAtOnce.contains(session.startEventId) && payload.participants!.length > 0){
+    if (startAtOnce.contains(session.startEventId) && payload.participants!.isNotEmpty){
       // This is something we should set up right away, even if it's on a delay.
       // If there are geofences, we should just tie the notification to the geofence.
       if (payload.geofences.length > 0) {

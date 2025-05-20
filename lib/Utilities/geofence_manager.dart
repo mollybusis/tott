@@ -125,19 +125,20 @@ class GeofenceManager {
 
   Future<List<String>> getActiveGeofences() async {
     List<Map> allGeofences = await databaseManager.getAllGeofences();
+    print(allGeofences);
     List<Map> activeGeofences = [];
-    if (allGeofences.length > 0) {
-      allGeofences.forEach((element) {
+    if (allGeofences.isNotEmpty) {
+      for (var element in allGeofences) {
         if (element['active'] == true || element['active'] == "true") {
           activeGeofences.add(element);
         }
-      });
+      }
     }
     List<String> activeGeofenceNames = [];
-    if (activeGeofences.length > 0) {
-      activeGeofences.forEach((element) {
+    if (activeGeofences.isNotEmpty) {
+      for (var element in activeGeofences) {
         activeGeofenceNames.add(element["identifier"]);
-      });
+      }
     }
     return activeGeofenceNames;
   }
