@@ -231,6 +231,8 @@ class _CreateAccountState extends State<CreateAccount> {
                                     "Error: Please check your connection and your credentials.");
                               } else if (success) {
                                 //we are authenticated, update the autoLogin and "remember me" prefs
+
+
                                 secureStorageManager
                                     .setAutoLoginPreference(doAutoLogin);
                                 if (doAutoLogin || rememberMe) {

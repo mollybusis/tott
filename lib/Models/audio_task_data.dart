@@ -166,9 +166,15 @@ class AudioTaskData {
     // STEP 5: Request upload
     String filename = path.basename(zipTarget);
 
-    Map<String, dynamic>? requestResult = await clientManager.requestUpload(filename, numBytes, contentMd5);
-    String uploadId = requestResult!["uploadId"];
-    String uploadUrl = requestResult!["uploadUrl"];
+    final requestResult = await clientManager.requestUpload(filename, numBytes, contentMd5);
+
+    if (requestResult == null) {
+      print("requestResult is null");
+      throw Exception("Upload request failed or returned incomplete data.");
+    }
+
+    final uploadId = requestResult["uploadId"] as String;
+    final uploadUrl = requestResult["uploadUrl"] as String;
 
     // STEP 6: Do Upload
     await clientManager.uploadContent(

@@ -86,7 +86,7 @@ class AuthUtils {
     String? password = await secureStorageManager.getPassword();
     print("email: $email");
     print("password: $password");
-    UserSessionInfo? loginInfo;
+    //UserSessionInfo? loginInfo;
     try {
       loginInfo = await signIn(email!, password!);
       print("autoSignIn Is loginInfo null?: ${loginInfo ==  null}");

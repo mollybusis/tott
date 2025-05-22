@@ -118,6 +118,9 @@ class NotificationManager {
       singleMulti = 'for you!';
     }
 
+    print("Time now: ${tz.TZDateTime.now(tz.local)}");
+    print("Time for notif: ${tz.TZDateTime.now(tz.local).add(Duration(seconds: delay))}");
+
     // call the notification at time method with time adjusted with delay
     createNotificationAtTime(tz.TZDateTime.now(tz.local).add(Duration(seconds: delay)),
         payload: updatedPayload ?? payload);
@@ -147,20 +150,23 @@ class NotificationManager {
       singleMulti = 'for you!';
     }
 
-    await notificationsPlugin.zonedSchedule(
-        0,
-        'Activity available!',
-        'Talk of the Town has an activity available $singleMulti',
-        tz.TZDateTime.from(time, tz.local),
-        const NotificationDetails(
-            android: AndroidNotificationDetails('tott_notifications',
-                'Talk of the Town notifications')
-        ),
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.wallClockTime,
-        payload: jsonEncode(updatedPayload != null ? updatedPayload.toMap() : genericNotificationPayload.toMap())
-    );
+      await notificationsPlugin.zonedSchedule(
+          0,
+          'Activity available!',
+          'Talk of the Town has an activity available $singleMulti',
+          tz.TZDateTime.from(time, tz.local),
+          const NotificationDetails(
+              android: AndroidNotificationDetails('tott_notifications',
+                  'Talk of the Town notifications',  importance: Importance.max,
+                priority: Priority.high)
+          ),
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+          payload: jsonEncode(updatedPayload != null
+              ? updatedPayload.toMap()
+              : genericNotificationPayload.toMap())
+      );
   }
 
   // this is gonna use geofences to trigger an immediate notification!

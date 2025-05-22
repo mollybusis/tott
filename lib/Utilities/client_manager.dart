@@ -21,7 +21,7 @@ import 'package:talk_of_the_town/main.dart';
 class ClientManager {
   String? sessionToken;
   // TODO MOLLY BEFORE PUSHING REMOVE DEV
-  static const baseUrl = "https://devebtott.gse.harvard.edu/api";
+  static const baseUrl = "https://tott.gse.harvard.edu/api";
 
   Future uploadSignature(
       String firstName, String lastName, String imageData) async {
@@ -419,11 +419,26 @@ class ClientManager {
         },
         body: json.encode(data),
       );
+      if (response.statusCode != 201 && response.statusCode != 200) {
+        print("Failed to get upload URL. Status: ${response.statusCode}, Body: ${response.body}");
+        return null;
+      }
+
       final jsonResponse = json.decode(response.body);
       print("upload request response body: $jsonResponse");
-      return {"uploadId": jsonResponse["id"], "uploadUrl": jsonResponse["url"]};
+
+      if (jsonResponse["id"] == null || jsonResponse["url"] == null) {
+        print("Missing id or url in response :(");
+        return null;
+      }
+
+      return {
+        "uploadId": jsonResponse["id"],
+        "uploadUrl": jsonResponse["url"]
+      };
     } catch (e) {
       print("Error occurred requesting upload. Details: $e");
+      return null;
     }
   }
 
@@ -744,6 +759,12 @@ class ClientManager {
 
   /// Adds an event completion on the server.
   Future<bool> postActivityEvent(StudyActivityEvent newEvent, {String studyId = 'NewTestStudy'}) async {
+
+    if (loginInfo == null || loginInfo!.sessionToken == null) {
+      print("Error: loginInfo $loginInfo or sessionToken $sessionToken is null, cannot post activity event.");
+      return false;
+    }
+
     StudyActivityEventRequest newRequest = StudyActivityEventRequest(
         eventId: newEvent.eventId, timestamp: newEvent.timestamp);
     //const baseUrl = "https://devebtott.gse.harvard.edu/api";
